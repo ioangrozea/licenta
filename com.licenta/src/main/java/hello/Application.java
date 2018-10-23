@@ -25,6 +25,7 @@ public class Application {
 			service.getPriceOfAdvertisement();
             System.out.println(ImagePrefixUrl.PIATA_A_Z);
 		};*/
+
 		return null;
 	}
 
