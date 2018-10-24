@@ -1,7 +1,8 @@
 package hello.exeption;
 
 public enum ExceptionCode {
-    GET_DOCUMENT_FAIL(10, "Document can not be loaded");
+    GET_DOCUMENT_FAIL(10, "Document can not be loaded"),
+    NOT_A_VALID_WEBSITE(11, "Website name is not valid");
 
     int id;
     String message;
