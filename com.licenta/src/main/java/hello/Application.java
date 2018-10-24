@@ -1,6 +1,5 @@
 package hello;
 
-import hello.service.AdvertisementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +19,7 @@ public class Application {
 	}
 
 	@Bean
-	public CommandLineRunner demo(AdvertisementService service) {
+	public CommandLineRunner demo() {
 		/*return (args) -> {
 			service.getPriceOfAdvertisement();
             System.out.println(ImagePrefixUrl.PIATA_A_Z);

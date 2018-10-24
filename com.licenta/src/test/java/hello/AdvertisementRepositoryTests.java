@@ -16,12 +16,15 @@
 
 package hello;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import hello.entity.Advertisement;
-import hello.repository.AdvertisementRepository;
+import hello.been.WebsiteContainer;
+import hello.entity.WebsiteName;
+import hello.exeption.BusinessException;
+import hello.repository.WebsiteRepository;
+import hello.service.WebsiteGeneratorService;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -33,13 +36,15 @@ public class AdvertisementRepositoryTests {
     @Autowired
     private TestEntityManager entityManager;
 
+    @InjectMocks
+    private WebsiteGeneratorService generatorService;
+
     @Autowired
-    private AdvertisementRepository advertisements;
+    private WebsiteRepository websiteRepository;
 
     @Test
-    public void testFindByLastName() {
-        /*Advertisement advertisement = new Advertisement(1000);
-        entityManager.persist(advertisement);*/
-
+    public void testFindByLastName() throws BusinessException {
+        generatorService.generateWebsites().forEach(entityManager::persist);
+        Assertions.assertThat(websiteRepository.findAll().iterator().next().getName().equals(WebsiteName.PIATA_A_Z));
     }
 }

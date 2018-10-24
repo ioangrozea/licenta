@@ -13,6 +13,8 @@ public class Website {
     @Column(unique = true, nullable = false)
     private String url;
     private String imagePrefix;
+
+    @Column(length = 2000)
     private HashMap<AdvertisementInformation, List<String>> bodyStructureInfo;
     private WebsiteName name;
 
