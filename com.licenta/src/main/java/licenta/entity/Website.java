@@ -1,4 +1,4 @@
-package hello.entity;
+package licenta.entity;
 
 import javax.persistence.*;
 import java.util.HashMap;
@@ -6,8 +6,9 @@ import java.util.List;
 
 @Entity
 public class Website {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -16,6 +17,7 @@ public class Website {
 
     @Column(length = 2000)
     private HashMap<AdvertisementInformation, List<String>> bodyStructureInfo;
+    @Column(unique = true)
     private WebsiteName name;
 
     public Website() {

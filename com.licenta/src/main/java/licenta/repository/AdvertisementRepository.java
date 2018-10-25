@@ -1,6 +1,6 @@
-package hello.repository;
+package licenta.repository;
 
-import hello.entity.Advertisement;
+import licenta.entity.Advertisement;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

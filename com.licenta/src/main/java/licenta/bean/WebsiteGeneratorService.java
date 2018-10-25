@@ -1,10 +1,10 @@
-package hello.service;
+package licenta.bean;
 
-import hello.entity.AdvertisementInformation;
-import hello.entity.Website;
-import hello.entity.WebsiteName;
-import hello.exeption.BusinessException;
-import hello.exeption.ExceptionCode;
+import licenta.entity.AdvertisementInformation;
+import licenta.entity.Website;
+import licenta.entity.WebsiteName;
+import licenta.exeption.BusinessException;
+import licenta.exeption.ExceptionCode;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import java.util.List;
 
 @Service
 public class WebsiteGeneratorService {
+
     public List<Website> generateWebsites() throws BusinessException {
         List<Website> websites = new ArrayList<>();
         Website piataAZ = new Website(

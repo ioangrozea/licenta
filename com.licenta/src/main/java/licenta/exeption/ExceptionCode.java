@@ -1,4 +1,4 @@
-package hello.exeption;
+package licenta.exeption;
 
 public enum ExceptionCode {
     GET_DOCUMENT_FAIL(10, "Document can not be loaded"),

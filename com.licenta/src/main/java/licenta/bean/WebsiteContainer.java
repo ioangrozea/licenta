@@ -1,14 +1,15 @@
-package hello.been;
+package licenta.bean;
 
-import hello.repository.WebsiteRepository;
-import hello.service.WebsiteGeneratorService;
+import licenta.repository.WebsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 
 @Configuration
+@EnableAspectJAutoProxy
+@ComponentScan(basePackages = "licenta")
 public class WebsiteContainer {
+
     private final WebsiteGeneratorService generatorService;
 
     @Autowired
@@ -17,8 +18,7 @@ public class WebsiteContainer {
     }
 
     @Bean
-    public CommandLineRunner demo(WebsiteRepository websiteRepository) {
-
+    public CommandLineRunner injectWebsites(WebsiteRepository websiteRepository) {
         return (args) -> websiteRepository.saveAll(generatorService.generateWebsites());
     }
 }

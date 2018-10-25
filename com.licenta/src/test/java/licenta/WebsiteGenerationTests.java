@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package hello;
+package licenta;
 
-import hello.been.WebsiteContainer;
-import hello.entity.WebsiteName;
-import hello.exeption.BusinessException;
-import hello.repository.WebsiteRepository;
-import hello.service.WebsiteGeneratorService;
-import org.assertj.core.api.Assertions;
+import licenta.entity.WebsiteName;
+import licenta.exeption.BusinessException;
+import licenta.repository.WebsiteRepository;
+import licenta.bean.WebsiteGeneratorService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,9 +29,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 @RunWith(SpringRunner.class)
 @DataJpaTest
-public class AdvertisementRepositoryTests {
+public class WebsiteGenerationTests {
+
     @Autowired
     private TestEntityManager entityManager;
 
@@ -42,9 +45,18 @@ public class AdvertisementRepositoryTests {
     @Autowired
     private WebsiteRepository websiteRepository;
 
-    @Test
-    public void testFindByLastName() throws BusinessException {
+    @Before
+    public void initializeRepository() throws BusinessException {
         generatorService.generateWebsites().forEach(entityManager::persist);
-        Assertions.assertThat(websiteRepository.findAll().iterator().next().getName().equals(WebsiteName.PIATA_A_Z));
+    }
+
+    @Test
+    public void websiteRepositoryNotEmpty() {
+        assertTrue(websiteRepository.findAll().iterator().hasNext());
+    }
+
+    @Test
+    public void testFindWebsiteByName() {
+        assertEquals(websiteRepository.findByName(WebsiteName.PIATA_A_Z).getName(), WebsiteName.PIATA_A_Z);
     }
 }

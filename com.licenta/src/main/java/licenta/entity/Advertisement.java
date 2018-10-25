@@ -1,4 +1,4 @@
-package hello.entity;
+package licenta.entity;
 
 import javax.persistence.*;
 import java.util.List;

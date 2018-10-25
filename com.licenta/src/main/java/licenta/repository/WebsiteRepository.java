@@ -1,13 +1,15 @@
-package hello.repository;
+package licenta.repository;
 
-import hello.entity.Website;
+import licenta.entity.Website;
+import licenta.entity.WebsiteName;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface WebsiteRepository extends CrudRepository<Website, Long> {
     Website findByUrl(String url);
+
     Website findByImagePrefix(String imagePrefix);
+
+    Website findByName(WebsiteName name);
 }

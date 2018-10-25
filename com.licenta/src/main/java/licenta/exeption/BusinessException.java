@@ -1,7 +1,6 @@
-package hello.exeption;
+package licenta.exeption;
 
-public class BusinessException extends Exception{
-
+public class BusinessException extends Exception {
 
     private ExceptionCode exceptionCode;
 
