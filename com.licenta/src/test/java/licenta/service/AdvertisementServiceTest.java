@@ -1,9 +1,14 @@
 package licenta.service;
 
 import licenta.aspect.GetDocumentAspect;
-import licenta.bean.WebsiteGeneratorService;
+import licenta.entity.Website;
 import licenta.entity.WebsiteName;
+import licenta.entity.factory.AdvertisementInformationFactory;
+import licenta.entity.factory.ImageInformationFactory;
+import licenta.entity.factory.PriceFactory;
+import licenta.entity.factory.WebsiteFactory;
 import licenta.exeption.BusinessException;
+import licenta.exeption.ExceptionCode;
 import licenta.repository.WebsiteRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration("/aspects.xml")
@@ -27,23 +33,35 @@ public class AdvertisementServiceTest {
     @Autowired
     private AdvertisementService advertisementService;
 
+    @InjectMocks
+    private WebsiteFactory websiteFactory;
+
+    @Mock
+    private PriceFactory priceFactory;
+    @Mock
+    private ImageInformationFactory imageInformationFactory;
+    @Mock
+    private AdvertisementInformationFactory advertisementInformationFactory;
     @Mock
     private WebsiteRepository websiteRepository;
 
-    @InjectMocks
-    private WebsiteGeneratorService websiteGeneratorService;
-
     @Before
     public void mockWebsiteRepo() throws BusinessException {
-        Mockito.when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(websiteGeneratorService.generateWebsites().get(0));
+        Website website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
+        when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
+        advertisementService.generateAdvertisement(websiteRepository.findByName(WebsiteName.PIATA_A_Z));
     }
-
 
     @Test
     public void getDocument() {
         assertEquals(websiteRepository.findByName(WebsiteName.PIATA_A_Z).getName(), WebsiteName.PIATA_A_Z);
         assertNotEquals(websiteRepository.findByName(WebsiteName.PIATA_A_Z).getUrl(), null);
-        advertisementService.getDocument(websiteRepository.findByName(WebsiteName.PIATA_A_Z).getUrl());
+        advertisementService.generateAdvertisement(websiteRepository.findByName(WebsiteName.PIATA_A_Z));
         assertNotEquals(getDocumentAspect.getHtmlDocument(), null);
     }
+
+   /* @Test
+    public void getAnnouncementsHtmlIsNotEmpty(){
+        assert(!advertisementService.getAnnouncementsHtml(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).isEmpty());
+    }*/
 }

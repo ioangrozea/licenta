@@ -1,5 +1,5 @@
 package licenta.entity;
 
-public enum AdvertisementInformation {
+public enum AdvertisementInformationEnum {
     ADVERTISEMENT, IMAGE, PRICE
 }

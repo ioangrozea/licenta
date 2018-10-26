@@ -1,8 +1,10 @@
 package licenta.entity;
 
+import licenta.entity.element.AdvertisementInformation;
+import licenta.entity.element.ImageInformation;
+import licenta.entity.element.PriceInformation;
+
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.List;
 
 @Entity
 public class Website {
@@ -10,24 +12,39 @@ public class Website {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(unique = true)
+    private WebsiteName name;
     @Column(unique = true, nullable = false)
     private String url;
     private String imagePrefix;
-
-    @Column(length = 2000)
-    private HashMap<AdvertisementInformation, List<String>> bodyStructureInfo;
-    @Column(unique = true)
-    private WebsiteName name;
+    @OneToOne
+    private PriceInformation price;
+    @OneToOne
+    private ImageInformation images;
+    @OneToOne
+    private AdvertisementInformation advertisements;
 
     public Website() {
     }
 
-
-    public Website(String url, String imagePrefix, HashMap<AdvertisementInformation, List<String>> bodyStructureInfo, WebsiteName name) {
+    public Website(WebsiteName name, String url, String imagePrefix, PriceInformation price, ImageInformation images, AdvertisementInformation advertisements) {
+        this.name = name;
         this.url = url;
         this.imagePrefix = imagePrefix;
-        this.bodyStructureInfo = bodyStructureInfo;
+        this.price = price;
+        this.images = images;
+        this.advertisements = advertisements;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public WebsiteName getName() {
+        return name;
+    }
+
+    public void setName(WebsiteName name) {
         this.name = name;
     }
 
@@ -47,23 +64,27 @@ public class Website {
         this.imagePrefix = imagePrefix;
     }
 
-    public HashMap<AdvertisementInformation, List<String>> getBodyStructureInfo() {
-        return bodyStructureInfo;
+    public PriceInformation getPrice() {
+        return price;
     }
 
-    public void setBodyStructureInfo(HashMap<AdvertisementInformation, List<String>> bodyStructureInfo) {
-        this.bodyStructureInfo = bodyStructureInfo;
+    public void setPrice(PriceInformation price) {
+        this.price = price;
     }
 
-    public WebsiteName getName() {
-        return name;
+    public ImageInformation getImages() {
+        return images;
     }
 
-    public void setName(WebsiteName name) {
-        this.name = name;
+    public void setImages(ImageInformation images) {
+        this.images = images;
     }
 
-    public Long getId() {
-        return id;
+    public AdvertisementInformation getAdvertisements() {
+        return advertisements;
+    }
+
+    public void setAdvertisements(AdvertisementInformation advertisements) {
+        this.advertisements = advertisements;
     }
 }

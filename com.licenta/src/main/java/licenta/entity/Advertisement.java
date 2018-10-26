@@ -23,7 +23,5 @@ public class Advertisement {
 
     protected Advertisement() {
     }
-
-
 }
 

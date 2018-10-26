@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package licenta;
+package licenta.bean;
 
 import licenta.entity.WebsiteName;
+import licenta.entity.factory.AdvertisementInformationFactory;
+import licenta.entity.factory.ImageInformationFactory;
+import licenta.entity.factory.PriceFactory;
+import licenta.entity.factory.WebsiteFactory;
 import licenta.exeption.BusinessException;
 import licenta.repository.WebsiteRepository;
-import licenta.bean.WebsiteGeneratorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -40,14 +44,23 @@ public class WebsiteGenerationTests {
     private TestEntityManager entityManager;
 
     @InjectMocks
-    private WebsiteGeneratorService generatorService;
+    private WebsiteFactory websiteFactory;
+
+    @Mock
+    private PriceFactory priceFactory;
+
+    @Mock
+    private ImageInformationFactory imageInformationFactory;
+
+    @Mock
+    private AdvertisementInformationFactory advertisementInformationFactory;
 
     @Autowired
     private WebsiteRepository websiteRepository;
 
     @Before
     public void initializeRepository() throws BusinessException {
-        generatorService.generateWebsites().forEach(entityManager::persist);
+        entityManager.persist(websiteFactory.getWebsite(WebsiteName.PIATA_A_Z));
     }
 
     @Test
