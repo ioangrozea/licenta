@@ -18,7 +18,7 @@ public class PriceFactory {
         }
     }
 
-    public PriceInformation generatePricePiazaAZ(){
+    private PriceInformation generatePricePiazaAZ() {
         PriceInformation priceInformation = new PriceInformation();
         priceInformation.setName(AdvertisementInformationEnum.PRICE);
         priceInformation.setWebsiteName(WebsiteName.PIATA_A_Z);

@@ -23,20 +23,20 @@ public class WebsiteFactory {
     public Website getWebsite(WebsiteName name) throws BusinessException {
         switch (name) {
             case PIATA_A_Z:
-                return generateWebsitePiazaAZ();
+                return generateWebsitePiataAZ();
             default:
                 throw new BusinessException(ExceptionCode.NOT_A_VALID_WEBSITE);
         }
     }
 
-    private Website generateWebsitePiazaAZ() throws BusinessException {
+    private Website generateWebsitePiataAZ() throws BusinessException {
         Website website = new Website();
         website.setName(WebsiteName.PIATA_A_Z);
         website.setImagePrefix("https://www.piata-az.ro");
         website.setUrl("https://www.piata-az.ro/imobiliare/apartamente-de-inchiriat?studies_location=cluj");
-        website.setAdvertisements(advertisementInformationFactory.advertisementInformation(WebsiteName.PIATA_A_Z));
+        website.setAdvertisements(advertisementInformationFactory.getAdvertisementInformation(WebsiteName.PIATA_A_Z));
         website.setPrice(priceFactory.getPrice(WebsiteName.PIATA_A_Z));
-        website.setImages(imageInformationFactory.advertisementInformation(WebsiteName.PIATA_A_Z));
+        website.setImages(imageInformationFactory.getImageInformation(WebsiteName.PIATA_A_Z));
         return website;
     }
 }

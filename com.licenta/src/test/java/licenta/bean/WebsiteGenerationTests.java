@@ -16,6 +16,8 @@
 
 package licenta.bean;
 
+import licenta.TestConfiguration;
+import licenta.entity.Website;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.AdvertisementInformationFactory;
 import licenta.entity.factory.ImageInformationFactory;
@@ -31,17 +33,25 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@ContextConfiguration(classes = TestConfiguration.class)
 public class WebsiteGenerationTests {
 
     @Autowired
     private TestEntityManager entityManager;
+
+    @Autowired
+    private WebsiteRepository websiteRepository;
+
+    @Autowired
+    private WebsiteGenerationTestService testsService;
 
     @InjectMocks
     private WebsiteFactory websiteFactory;
@@ -55,11 +65,14 @@ public class WebsiteGenerationTests {
     @Mock
     private AdvertisementInformationFactory advertisementInformationFactory;
 
-    @Autowired
-    private WebsiteRepository websiteRepository;
-
     @Before
     public void initializeRepository() throws BusinessException {
+        when(priceFactory.getPrice(WebsiteName.PIATA_A_Z))
+                .thenReturn(new PriceFactory().getPrice(WebsiteName.PIATA_A_Z));
+        when(imageInformationFactory.getImageInformation(WebsiteName.PIATA_A_Z))
+                .thenReturn(new ImageInformationFactory().getImageInformation(WebsiteName.PIATA_A_Z));
+        when(advertisementInformationFactory.getAdvertisementInformation(WebsiteName.PIATA_A_Z))
+                .thenReturn(new AdvertisementInformationFactory().getAdvertisementInformation(WebsiteName.PIATA_A_Z));
         entityManager.persist(websiteFactory.getWebsite(WebsiteName.PIATA_A_Z));
     }
 
@@ -71,5 +84,23 @@ public class WebsiteGenerationTests {
     @Test
     public void testFindWebsiteByName() {
         assertEquals(websiteRepository.findByName(WebsiteName.PIATA_A_Z).getName(), WebsiteName.PIATA_A_Z);
+    }
+
+    @Test
+    public void websiteFactoryHasInformation() throws NoSuchFieldException, IllegalAccessException{
+        PriceFactory priceFactory = (PriceFactory)
+                testsService.getPrivateFinalFieldValueFromWebsiteFactory("priceFactory", websiteFactory);
+        assertNotEquals(priceFactory, null);
+
+        AdvertisementInformationFactory advertisementInformationFactory = (AdvertisementInformationFactory)
+                testsService.getPrivateFinalFieldValueFromWebsiteFactory("advertisementInformationFactory", websiteFactory);
+        assertNotEquals(advertisementInformationFactory, null);
+
+        ImageInformationFactory imageInformationFactory = (ImageInformationFactory)
+                testsService.getPrivateFinalFieldValueFromWebsiteFactory("imageInformationFactory", websiteFactory);
+        assertNotEquals(imageInformationFactory, null);
+
+        Website website = websiteRepository.findByName(WebsiteName.PIATA_A_Z);
+        assertNotEquals(website.getImagePrefix(), null);
     }
 }

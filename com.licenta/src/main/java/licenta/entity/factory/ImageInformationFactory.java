@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ImageInformationFactory {
-    public ImageInformation advertisementInformation(WebsiteName name) throws BusinessException {
+    public ImageInformation getImageInformation(WebsiteName name) throws BusinessException {
         switch (name) {
             case PIATA_A_Z:
                 return generateImageInformationPiazaAZ();
