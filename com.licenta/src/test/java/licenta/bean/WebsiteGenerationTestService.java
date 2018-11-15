@@ -1,3 +1,4 @@
+/*
 package licenta.bean;
 
 import licenta.entity.factory.WebsiteFactory;
@@ -18,3 +19,4 @@ public class WebsiteGenerationTestService {
         return privateField.get(websiteFactory);
     }
 }
+*/

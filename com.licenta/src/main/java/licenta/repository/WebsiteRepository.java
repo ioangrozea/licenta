@@ -7,9 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WebsiteRepository extends CrudRepository<Website, Long> {
-    Website findByUrl(String url);
-
-    Website findByImagePrefix(String imagePrefix);
-
     Website findByName(WebsiteName name);
 }

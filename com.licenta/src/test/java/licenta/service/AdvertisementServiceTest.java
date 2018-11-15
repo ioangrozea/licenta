@@ -1,21 +1,20 @@
+/*
 package licenta.service;
 
 import licenta.aspect.GetDocumentAspect;
-import licenta.entity.Website;
+import licenta.dto.WebsiteDto;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.AdvertisementInformationFactory;
 import licenta.entity.factory.ImageInformationFactory;
 import licenta.entity.factory.PriceFactory;
 import licenta.entity.factory.WebsiteFactory;
 import licenta.exeption.BusinessException;
-import licenta.exeption.ExceptionCode;
 import licenta.repository.WebsiteRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -47,7 +46,7 @@ public class AdvertisementServiceTest {
 
     @Before
     public void mockWebsiteRepo() throws BusinessException {
-        Website website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
+        WebsiteDto website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
         when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
         advertisementService.generateAdvertisement(websiteRepository.findByName(WebsiteName.PIATA_A_Z));
     }
@@ -60,8 +59,10 @@ public class AdvertisementServiceTest {
         assertNotEquals(getDocumentAspect.getHtmlDocument(), null);
     }
 
-   /* @Test
+   */
+/* @Test
     public void getAnnouncementsHtmlIsNotEmpty(){
         assert(!advertisementService.getAnnouncementsHtml(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).isEmpty());
-    }*/
-}
+    }*//*
+
+}*/
