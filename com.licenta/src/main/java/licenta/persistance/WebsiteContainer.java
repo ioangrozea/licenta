@@ -1,8 +1,8 @@
-package licenta.bean;
+package licenta.persistance;
 
-import licenta.dto.factory.WebsiteDotFactory;
 import licenta.entity.WebsiteName;
-import licenta.repository.WebsiteDtoRepository;
+import licenta.entity.factory.WebsiteFactory;
+import licenta.repository.WebsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -14,19 +14,17 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = "licenta")
 public class WebsiteContainer {
-
-    private final WebsiteDotFactory websiteFactory;
-    private final WebsiteDtoRepository websiteDtoRepository;
+    private final WebsiteRepository websiteRepository;
+    private final WebsiteFactory websiteFactory;
 
     @Autowired
-    public WebsiteContainer(WebsiteDotFactory websiteFactory, WebsiteDtoRepository websiteDtoRepository) {
+    public WebsiteContainer(WebsiteRepository websiteRepository, WebsiteFactory websiteFactory) {
+        this.websiteRepository = websiteRepository;
         this.websiteFactory = websiteFactory;
-        this.websiteDtoRepository = websiteDtoRepository;
     }
 
     @Bean
     public CommandLineRunner injectWebsites() {
-        return (args) -> websiteFactory.getWebsite(WebsiteName.PIATA_A_Z)
-                .ifPresent(websiteDtoRepository::add);
+        return (args) -> websiteFactory.getWebsite(WebsiteName.PIATA_A_Z).ifPresent(websiteRepository::save);
     }
 }

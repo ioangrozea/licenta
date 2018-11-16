@@ -5,9 +5,11 @@ import licenta.dto.TagTypes;
 import licenta.dto.WebsiteDto;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
+import licenta.repository.WebsiteRepository;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -19,7 +21,14 @@ import java.util.Set;
 @NoArgsConstructor
 @Service
 public class WebsiteDotFactory {
-    public Optional<WebsiteDto> getWebsite(WebsiteName websiteName) {
+    private WebsiteRepository websiteRepository;
+
+    @Autowired
+    public WebsiteDotFactory(WebsiteRepository websiteRepository) {
+        this.websiteRepository = websiteRepository;
+    }
+
+    public Optional<WebsiteDto> getWebsiteDto(WebsiteName websiteName) {
         switch (websiteName) {
             case PIATA_A_Z:
                 return Optional.of(generatePIATA_A_Z());
@@ -29,10 +38,9 @@ public class WebsiteDotFactory {
     }
 
     private WebsiteDto generatePIATA_A_Z() {
-        Website website = new Website();
-        website.setName(WebsiteName.PIATA_A_Z);
+
         WebsiteDto websiteDto = new WebsiteDto();
-        websiteDto.setWebsite(website);
+        websiteRepository.findByName(WebsiteName.PIATA_A_Z).ifPresent(websiteDto::setWebsite);
         websiteDto.addTagSetToTagType(TagTypes.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
         websiteDto.addTagSetToTagType(TagTypes.TITLE, generateTitleTagPIATA_A_Z());
         websiteDto.addTagSetToTagType(TagTypes.URL, generateUrlTagPIATA_A_Z());
@@ -79,4 +87,6 @@ public class WebsiteDotFactory {
         tags.add(tag);
         return tags;
     }
+
+
 }

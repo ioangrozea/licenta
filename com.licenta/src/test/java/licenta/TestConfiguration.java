@@ -15,24 +15,5 @@ public class TestConfiguration {
 
     @Configuration
     static class contextConfiguration {
-        /*@Bean
-        public WebsiteGenerationTestService websiteGenerationTestService() {
-            return new WebsiteGenerationTestService();
-        }
-
-        @Bean
-        public PriceFactory priceFactory(){
-            return new PriceFactory();
-        }
-
-        @Bean
-        public ImageInformationFactory imageInformationFactory(){
-            return new ImageInformationFactory();
-        }
-
-        @Bean
-        public AdvertisementInformationFactory advertisementInformationFactory(){
-            return new AdvertisementInformationFactory();
-        }*/
     }
 }
