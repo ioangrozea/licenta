@@ -1,4 +1,4 @@
-package licenta.persistance;
+package licenta.container;
 
 import licenta.TestConfiguration;
 import licenta.entity.Website;

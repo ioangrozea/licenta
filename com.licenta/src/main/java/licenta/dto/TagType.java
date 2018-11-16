@@ -1,5 +1,5 @@
 package licenta.dto;
 
-public enum TagTypes {
+public enum TagType {
     TITLE, PRICE, DESCRIPTION, ADVERTISEMENT, URL, CURRENCY
 }

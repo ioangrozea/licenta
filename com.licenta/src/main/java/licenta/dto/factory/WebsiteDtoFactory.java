@@ -1,9 +1,8 @@
 package licenta.dto.factory;
 
 import licenta.dto.Tag;
-import licenta.dto.TagTypes;
+import licenta.dto.TagType;
 import licenta.dto.WebsiteDto;
-import licenta.entity.Website;
 import licenta.entity.WebsiteName;
 import licenta.repository.WebsiteRepository;
 import lombok.Getter;
@@ -20,11 +19,11 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Service
-public class WebsiteDotFactory {
+public class WebsiteDtoFactory {
     private WebsiteRepository websiteRepository;
 
     @Autowired
-    public WebsiteDotFactory(WebsiteRepository websiteRepository) {
+    public WebsiteDtoFactory(WebsiteRepository websiteRepository) {
         this.websiteRepository = websiteRepository;
     }
 
@@ -41,11 +40,11 @@ public class WebsiteDotFactory {
 
         WebsiteDto websiteDto = new WebsiteDto();
         websiteRepository.findByName(WebsiteName.PIATA_A_Z).ifPresent(websiteDto::setWebsite);
-        websiteDto.addTagSetToTagType(TagTypes.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagTypes.TITLE, generateTitleTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagTypes.URL, generateUrlTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagTypes.PRICE, generatePriceTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagTypes.CURRENCY, generatePriceCurrencyTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.TITLE, generateTitleTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.URL, generateUrlTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.PRICE, generatePriceTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.CURRENCY, generatePriceCurrencyTagPIATA_A_Z());
         return websiteDto;
     }
 

@@ -1,5 +1,7 @@
 package licenta.service;
 
+import licenta.dto.WebsiteDto;
+import licenta.dto.helpers.WebsiteDtoWebsiteHelper;
 import licenta.repository.WebsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +13,18 @@ public class WebsiteService {
 
     private final AdvertisementService advertisementService;
 
+    private final WebsiteDtoWebsiteHelper websiteHelper;
+
     @Autowired
-    public WebsiteService(WebsiteRepository websiteRepository, AdvertisementService advertisementService) {
+    public WebsiteService(WebsiteRepository websiteRepository, AdvertisementService advertisementService, WebsiteDtoWebsiteHelper websiteHelper) {
         this.websiteRepository = websiteRepository;
         this.advertisementService = advertisementService;
+        this.websiteHelper = websiteHelper;
     }
 
-    private void setWebsiteAnnouncements() {
-        websiteRepository.findAll().forEach(advertisementService::generateAdvertisement);
+    public void setWebsiteAnnouncements() {
+        websiteRepository.findAll()
+                .forEach(website -> websiteHelper.fromWebsitetoWebsiteDto(website)
+                        .ifPresent(advertisementService::generateAdvertisement));
     }
 }

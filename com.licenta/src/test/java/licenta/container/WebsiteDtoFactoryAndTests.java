@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package licenta.persistance;
+package licenta.container;
 
 import licenta.TestConfiguration;
-import licenta.dto.factory.WebsiteDotFactory;
+import licenta.dto.factory.WebsiteDtoFactory;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.WebsiteFactory;
@@ -44,7 +44,7 @@ public class WebsiteDtoFactoryAndTests {
     private WebsiteDtoRepository websiteDtoRepository;
 
     @InjectMocks
-    private WebsiteDotFactory websiteDotFactory;
+    private WebsiteDtoFactory websiteDtoFactory;
 
     @Mock
     private WebsiteRepository websiteRepository;
@@ -56,7 +56,7 @@ public class WebsiteDtoFactoryAndTests {
     public void initializeRepository() {
         Optional<Website> website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
         when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
-        websiteDotFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
+        websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
         website.ifPresent(websiteRepository::save);
     }
 

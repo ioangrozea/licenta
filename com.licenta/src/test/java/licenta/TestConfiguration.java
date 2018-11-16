@@ -15,5 +15,6 @@ public class TestConfiguration {
 
     @Configuration
     static class contextConfiguration {
+
     }
 }
