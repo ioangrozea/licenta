@@ -21,7 +21,7 @@ public class WebsiteDtoWebsiteHelper {
         return Optional.of(websiteDto.getWebsite());
     }
 
-    public Optional<WebsiteDto> fromWebsitetoWebsiteDto(Website website) {
+    public Optional<WebsiteDto> fromWebsiteToWebsiteDto(Website website) {
         return websiteDtoRepository.findByName(website.getName());
     }
 }

@@ -1,6 +1,5 @@
 package licenta.service;
 
-import licenta.dto.WebsiteDto;
 import licenta.dto.helpers.WebsiteDtoWebsiteHelper;
 import licenta.repository.WebsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,7 @@ public class WebsiteService {
 
     public void setWebsiteAnnouncements() {
         websiteRepository.findAll()
-                .forEach(website -> websiteHelper.fromWebsitetoWebsiteDto(website)
+                .forEach(website -> websiteHelper.fromWebsiteToWebsiteDto(website)
                         .ifPresent(advertisementService::generateAdvertisement));
     }
 }

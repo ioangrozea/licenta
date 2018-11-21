@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -34,7 +34,7 @@ public class AdvertisementService {
 
     private Document getDocument(WebsiteDto websiteDto) {
         try {
-            return Jsoup.connect(websiteDto.getWebsite().getUrl()).get();
+            return Jsoup.connect(websiteDto.getWebsite().getUrl()).timeout(10000).ignoreHttpErrors(true).validateTLSCertificates(false).followRedirects(true).get();
         } catch (IOException e) {
             throw new RuntimeException("website url not ok");
         }
@@ -66,26 +66,29 @@ public class AdvertisementService {
     }
 
     private String getAnnouncementUrl(Document document, WebsiteDto websiteDto) {
-        Elements url = getTagTypeContent(document, websiteDto, TagType.TITLE);
+        Elements url = getTagTypeContent(document, websiteDto, TagType.URL);
         return url.text();
     }
 
     private Elements getTagTypeContent(Document document, WebsiteDto websiteDto, TagType tagType) {
         Elements tagElements = new Elements();
         websiteDto.getTags().get(tagType)
-                .stream()
-                .map(this::collectAllTagNames)
-                .flatMap(Collection::stream)
-                .forEach(tagName -> tagElements.addAll(document.select("[class^=" + tagName + "]")));
+                .forEach(tag ->
+                        getTagContent(document, tag).ifPresent(tagElements::addAll));
         return tagElements;
     }
 
-    private Set<String> collectAllTagNames(Tag tag) {
-        Set<String> tagNames = new HashSet<>();
-        while (tag.getNextTag() != null) {
-            tagNames.add(tag.getTagName());
+    private Optional<Elements> getTagContent(Document document, Tag tag) {
+        Elements initialDocument = new Elements(document);
+        do {
+            //get block of classes or tags that have the tagName und update doc to find in
+            Elements currentElements = document.select("div." + tag.getTagName());
+            initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
+            currentElements = document.select(tag.getTagName());
+            initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             tag = tag.getNextTag();
-        }
-        return tagNames;
+        } while (tag != null);
+        return initialDocument.html().equals(document.html()) ? Optional.empty() : Optional.of(new Elements(initialDocument));
     }
+
 }

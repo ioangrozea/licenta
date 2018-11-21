@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -53,6 +52,13 @@ public class AdvertisementServiceTest {
     @Test
     public void testGetDoc() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method privateMethod = AdvertisementService.class.getDeclaredMethod("getDocument", WebsiteDto.class);
+        privateMethod.setAccessible(true);
+        assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get()));
+    }
+
+    @Test
+    public void testAdvertisementsCreated() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method privateMethod = AdvertisementService.class.getDeclaredMethod("getWebsiteAdvertisements", WebsiteDto.class);
         privateMethod.setAccessible(true);
         assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get()));
     }

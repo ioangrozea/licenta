@@ -11,7 +11,8 @@ public class Tag {
     private String tagName;
     private Tag nextTag;
 
-    public Tag(String s) {
+    public Tag(String tagName) {
+        this.tagName = tagName;
         nextTag = null;
     }
 
