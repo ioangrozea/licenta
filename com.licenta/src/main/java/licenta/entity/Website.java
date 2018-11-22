@@ -22,6 +22,9 @@ public class Website {
     @Column(unique = true, nullable = false)
     private String url;
 
+    @Column(unique = true, nullable = false)
+    private String baseUrl;
+
     @OneToMany(mappedBy = "website")
     private Set<Advertisement> advertisements;
 }

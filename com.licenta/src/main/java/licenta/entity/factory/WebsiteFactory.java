@@ -21,6 +21,7 @@ public class WebsiteFactory {
         Website website = new Website();
         website.setName(WebsiteName.PIATA_A_Z);
         website.setUrl("https://www.piata-az.ro/imobiliare/apartamente-de-inchiriat?studies_location=cluj");
+        website.setBaseUrl("https://www.piata-az.ro");
         return website;
     }
 }

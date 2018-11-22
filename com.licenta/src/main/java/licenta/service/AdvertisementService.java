@@ -67,7 +67,7 @@ public class AdvertisementService {
 
     private String getAnnouncementUrl(Document document, WebsiteDto websiteDto) {
         Elements url = getTagTypeContent(document, websiteDto, TagType.URL);
-        return url.text();
+        return websiteDto.getWebsite().getBaseUrl() + url.attr("href");
     }
 
     private Elements getTagTypeContent(Document document, WebsiteDto websiteDto, TagType tagType) {
