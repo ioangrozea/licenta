@@ -16,7 +16,6 @@
 
 package licenta.container;
 
-import licenta.TestConfiguration;
 import licenta.dto.factory.WebsiteDtoFactory;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
@@ -37,7 +36,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
 public class WebsiteDtoFactoryAndTests {
 
     @InjectMocks

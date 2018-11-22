@@ -1,6 +1,5 @@
 package licenta.container;
 
-import licenta.TestConfiguration;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.WebsiteFactory;
@@ -20,7 +19,6 @@ import java.util.Optional;
 import static junit.framework.TestCase.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
 @DataJpaTest
 public class WebsiteFactoryAndRepoTest {
     @Autowired

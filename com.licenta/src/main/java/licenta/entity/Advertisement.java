@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Currency;
 import java.util.List;
 
 @Entity
@@ -29,12 +30,11 @@ public class Advertisement {
     @Column(nullable = false)
     private Float price;
 
+    @Column(nullable = false)
+    private Currency currency;
+
     @ElementCollection
     private List<String> imageUrls;
 
     private String description;
-
-
-
 }
-

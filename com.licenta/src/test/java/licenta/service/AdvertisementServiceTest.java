@@ -1,6 +1,5 @@
 package licenta.service;
 
-import licenta.TestConfiguration;
 import licenta.dto.WebsiteDto;
 import licenta.dto.factory.WebsiteDtoFactory;
 import licenta.entity.Advertisement;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
 public class AdvertisementServiceTest {
     @InjectMocks
     private AdvertisementService advertisementService;
@@ -69,6 +66,7 @@ public class AdvertisementServiceTest {
             assertNotNull(advertisement.getAdvertisementUrl());
             assertNotNull(advertisement.getPrice());
             assertNotNull(advertisement.getTitle());
+            assertNotNull(advertisement.getCurrency());
         });
     }
 }

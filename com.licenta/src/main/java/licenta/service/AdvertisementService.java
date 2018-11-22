@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Currency;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class AdvertisementService {
             advertisement.setTitle(getAnnouncementTitle(Jsoup.parse(announcement.html()), websiteDto));
             advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteDto));
             advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteDto));
+            advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteDto));
             advertisements.add(advertisement);
             advertisement.setWebsite(websiteDto.getWebsite());
         }
@@ -68,6 +70,18 @@ public class AdvertisementService {
     private String getAnnouncementUrl(Document document, WebsiteDto websiteDto) {
         Elements url = getTagTypeContent(document, websiteDto, TagType.URL);
         return websiteDto.getWebsite().getBaseUrl() + url.attr("href");
+    }
+
+    private Currency getPriceCurrency(Document document, WebsiteDto websiteDto) {
+        Elements price = getTagTypeContent(document, websiteDto, TagType.CURRENCY);
+        switch (price.text()) {
+            case "euro":
+                return Currency.getInstance("EUR");
+            case "lei":
+                return Currency.getInstance("RON");
+            default:
+                return Currency.getInstance("EUR");
+        }
     }
 
     private Elements getTagTypeContent(Document document, WebsiteDto websiteDto, TagType tagType) {
