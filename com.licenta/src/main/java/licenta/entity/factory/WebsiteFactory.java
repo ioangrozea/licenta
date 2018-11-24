@@ -12,6 +12,8 @@ public class WebsiteFactory {
         switch (websiteName) {
             case PIATA_A_Z:
                 return Optional.of(generateWebsitePIATA_A_Z());
+            case OLX:
+                return Optional.of(generateWebsiteOLX());
             default:
                 return Optional.empty();
         }
@@ -22,6 +24,14 @@ public class WebsiteFactory {
         website.setName(WebsiteName.PIATA_A_Z);
         website.setUrl("https://www.piata-az.ro/imobiliare/apartamente-de-inchiriat?studies_location=cluj");
         website.setBaseUrl("https://www.piata-az.ro");
+        return website;
+    }
+
+    private Website generateWebsiteOLX() {
+        Website website = new Website();
+        website.setName(WebsiteName.OLX);
+        website.setUrl("https://www.olx.ro/imobiliare/apartamente-garsoniere-de-inchiriat/cluj-napoca/");
+        website.setBaseUrl("");
         return website;
     }
 }

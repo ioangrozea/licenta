@@ -17,9 +17,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -42,10 +44,17 @@ public class AdvertisementServiceTest {
 
     @Before
     public void initializeRepository() {
-        Optional<Website> website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
-        when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
-        websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
-        website.ifPresent(websiteRepository::save);
+        Optional<Website> websitePIATA_A_Z = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
+        Optional<Website> websiteOLX = websiteFactory.getWebsite(WebsiteName.OLX);
+
+        websitePIATA_A_Z.ifPresent(website -> initializeSpecificRepository(website, WebsiteName.PIATA_A_Z));
+        websiteOLX.ifPresent(website -> initializeSpecificRepository(website, WebsiteName.OLX));
+    }
+
+    public void initializeSpecificRepository(Website website, WebsiteName websiteName) {
+        when(websiteRepository.findByName(websiteName)).thenReturn(Optional.of(website) );
+        websiteDtoFactory.getWebsiteDto(websiteName).ifPresent(websiteDtoRepository::add);
+        websiteRepository.save(website);
     }
 
 
@@ -53,15 +62,22 @@ public class AdvertisementServiceTest {
     public void testGetDoc() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method privateMethod = AdvertisementService.class.getDeclaredMethod("getDocument", WebsiteDto.class);
         privateMethod.setAccessible(true);
+        assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.OLX).get()));
         assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get()));
     }
 
     @Test
     public void testAdvertisementsCreated() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ass(WebsiteName.PIATA_A_Z);
+        ass(WebsiteName.OLX);
+
+    }
+
+    private void ass(WebsiteName websiteName) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         Method privateMethod = AdvertisementService.class.getDeclaredMethod("getWebsiteAdvertisements", WebsiteDto.class);
         privateMethod.setAccessible(true);
-        Set<Advertisement> advertisements = (Set<Advertisement>) privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get());
-        assertNotNull(advertisements);
+        Set<Advertisement> advertisements = (Set<Advertisement>) privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(websiteName).get());
+        assertFalse(advertisements.isEmpty());
         advertisements.forEach(advertisement -> {
             assertNotNull(advertisement.getAdvertisementUrl());
             assertNotNull(advertisement.getPrice());

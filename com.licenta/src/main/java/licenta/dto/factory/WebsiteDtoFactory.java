@@ -31,6 +31,8 @@ public class WebsiteDtoFactory {
         switch (websiteName) {
             case PIATA_A_Z:
                 return Optional.of(generatePIATA_A_Z());
+            case OLX:
+                return Optional.of(generateOLX());
             default:
                 return Optional.empty();
         }
@@ -48,6 +50,17 @@ public class WebsiteDtoFactory {
         return websiteDto;
     }
 
+    private WebsiteDto generateOLX() {
+
+        WebsiteDto websiteDto = new WebsiteDto();
+        websiteRepository.findByName(WebsiteName.OLX).ifPresent(websiteDto::setWebsite);
+        websiteDto.addTagSetToTagType(TagType.ADVERTISEMENT, generateAnnouncementTagOLX());
+        websiteDto.addTagSetToTagType(TagType.TITLE, generateTitleTagOLX());
+        websiteDto.addTagSetToTagType(TagType.URL, generateUrlTagOLX());
+        websiteDto.addTagSetToTagType(TagType.PRICE, generatePriceTagOLX());
+        return websiteDto;
+    }
+
     private Set<Tag> generateAnnouncementTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
         Tag tag = new Tag("announcement announcement--promoted");
@@ -59,9 +72,25 @@ public class WebsiteDtoFactory {
         return tags;
     }
 
+    private Set<Tag> generateAnnouncementTagOLX() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("offer-wrapper");
+        tags.add(tag);
+        tag = new Tag("offer");
+        tags.add(tag);
+        return tags;
+    }
+
     private Set<Tag> generateTitleTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
         Tag tag = new Tag("announcement__description clearfix", new Tag("a", new Tag("title")));
+        tags.add(tag);
+        return tags;
+    }
+
+    private Set<Tag> generateTitleTagOLX() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("lheight22 margintop5", new Tag("a", new Tag("marginright5 link linkWithHash detailsLink")));
         tags.add(tag);
         return tags;
     }
@@ -73,9 +102,23 @@ public class WebsiteDtoFactory {
         return tags;
     }
 
+    private Set<Tag> generateUrlTagOLX() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("lheight22 margintop5", new Tag("a", new Tag("href")));
+        tags.add(tag);
+        return tags;
+    }
+
     private Set<Tag> generatePriceTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
         Tag tag = new Tag("announcement__info", new Tag("announcement__info__price", new Tag("strong")));
+        tags.add(tag);
+        return tags;
+    }
+
+    private Set<Tag> generatePriceTagOLX() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("space inlblk rel", new Tag("strong"));
         tags.add(tag);
         return tags;
     }

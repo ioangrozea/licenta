@@ -36,7 +36,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-public class WebsiteDtoFactoryAndTests {
+public class WebsiteDtoFactoryTests {
 
     @InjectMocks
     private WebsiteDtoRepository websiteDtoRepository;
@@ -52,10 +52,17 @@ public class WebsiteDtoFactoryAndTests {
 
     @Before
     public void initializeRepository() {
-        Optional<Website> website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
-        when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
-        websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
-        website.ifPresent(websiteRepository::save);
+        Optional<Website> websitePIATA_A_Z = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
+        Optional<Website> websiteOLX = websiteFactory.getWebsite(WebsiteName.OLX);
+
+        websitePIATA_A_Z.ifPresent(website -> initializeSpecificRepository(website, WebsiteName.PIATA_A_Z));
+        websiteOLX.ifPresent(website -> initializeSpecificRepository(website, WebsiteName.OLX));
+    }
+
+    private void initializeSpecificRepository(Website website, WebsiteName websiteName) {
+        when(websiteRepository.findByName(websiteName)).thenReturn(Optional.of(website));
+        websiteDtoFactory.getWebsiteDto(websiteName).ifPresent(websiteDtoRepository::add);
+        websiteRepository.save(website);
     }
 
     @Test
@@ -64,7 +71,12 @@ public class WebsiteDtoFactoryAndTests {
     }
 
     @Test
-    public void testFindWebsiteByName() {
+    public void testFindWebsiteByNamePIATA_A_Z() {
         assertTrue(websiteDtoRepository.findByName(WebsiteName.PIATA_A_Z).isPresent());
+    }
+
+    @Test
+    public void testFindWebsiteByNameOLX() {
+        assertTrue(websiteDtoRepository.findByName(WebsiteName.OLX).isPresent());
     }
 }

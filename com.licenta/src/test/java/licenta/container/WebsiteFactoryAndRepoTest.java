@@ -33,15 +33,21 @@ public class WebsiteFactoryAndRepoTest {
     @Before
     public void initializeRepository() {
         websiteFactory.getWebsite(WebsiteName.PIATA_A_Z).ifPresent(entityManager::persist);
+        websiteFactory.getWebsite(WebsiteName.OLX).ifPresent(entityManager::persist);
     }
 
     @Test
     public void testWebsiteRepository() {
-        Optional<Website> website = websiteRepository.findByName(WebsiteName.PIATA_A_Z);
+        testSpecificWebsiteRepository(WebsiteName.PIATA_A_Z, "https://www.piata-az.ro/imobiliare/apartamente-de-inchiriat?studies_location=cluj");
+        testSpecificWebsiteRepository(WebsiteName.OLX, "https://www.olx.ro/imobiliare/apartamente-garsoniere-de-inchiriat/cluj-napoca/");
+    }
+
+    private void testSpecificWebsiteRepository(WebsiteName websiteName, String url) {
+        Optional<Website> website = websiteRepository.findByName(websiteName);
         assertTrue(website.isPresent());
         assertNull(website.get().getAdvertisements());
-        assertEquals(website.get().getName(), WebsiteName.PIATA_A_Z);
-        assertEquals(website.get().getUrl(), "https://www.piata-az.ro/imobiliare/apartamente-de-inchiriat?studies_location=cluj");
+        assertEquals(website.get().getName(), websiteName);
+        assertEquals(website.get().getUrl(), url);
         assertNotNull(website.get().getId());
     }
 }

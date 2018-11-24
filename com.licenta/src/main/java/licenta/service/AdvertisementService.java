@@ -64,7 +64,7 @@ public class AdvertisementService {
 
     private Float getAnnouncementPrice(Document document, WebsiteDto websiteDto) {
         Elements price = getTagTypeContent(document, websiteDto, TagType.PRICE);
-        return Float.parseFloat(price.text());
+        return Float.valueOf(price.text().replaceAll("€", ""));
     }
 
     private String getAnnouncementUrl(Document document, WebsiteDto websiteDto) {
@@ -96,9 +96,9 @@ public class AdvertisementService {
         Elements initialDocument = new Elements(document);
         do {
             //get block of classes or tags that have the tagName und update doc to find in
-            Elements currentElements = document.select("div." + tag.getTagName());
+            Elements currentElements = initialDocument.select("div." + tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
-            currentElements = document.select(tag.getTagName());
+            currentElements = initialDocument.select(tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             tag = tag.getNextTag();
         } while (tag != null);
