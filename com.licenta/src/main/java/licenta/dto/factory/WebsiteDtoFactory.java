@@ -37,7 +37,6 @@ public class WebsiteDtoFactory {
     }
 
     private WebsiteDto generatePIATA_A_Z() {
-
         WebsiteDto websiteDto = new WebsiteDto();
         websiteRepository.findByName(WebsiteName.PIATA_A_Z).ifPresent(websiteDto::setWebsite);
         websiteDto.addTagSetToTagType(TagType.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
@@ -45,7 +44,15 @@ public class WebsiteDtoFactory {
         websiteDto.addTagSetToTagType(TagType.URL, generateUrlTagPIATA_A_Z());
         websiteDto.addTagSetToTagType(TagType.PRICE, generatePriceTagPIATA_A_Z());
         websiteDto.addTagSetToTagType(TagType.CURRENCY, generatePriceCurrencyTagPIATA_A_Z());
+        websiteDto.addTagSetToTagType(TagType.PHOTOS, generatePhotoTagPIATA_A_Z());
         return websiteDto;
+    }
+
+    private Set<Tag> generatePhotoTagPIATA_A_Z() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("main-slider", new Tag("fancybox", new Tag("img")));
+        tags.add(tag);
+        return tags;
     }
 
     private Set<Tag> generateAnnouncementTagPIATA_A_Z() {

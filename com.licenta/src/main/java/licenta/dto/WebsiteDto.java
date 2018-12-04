@@ -23,6 +23,7 @@ public class WebsiteDto {
         tags.put(TagType.DESCRIPTION, new HashSet<>());
         tags.put(TagType.URL, new HashSet<>());
         tags.put(TagType.CURRENCY, new HashSet<>());
+        tags.put(TagType.PHOTOS, new HashSet<>());
     }
 
     public void addTagToTagType(TagType tagType, Tag tag) {

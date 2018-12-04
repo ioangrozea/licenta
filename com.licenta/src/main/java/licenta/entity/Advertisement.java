@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Currency;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -34,7 +35,7 @@ public class Advertisement {
     private Currency currency;
 
     @ElementCollection
-    private List<String> imageUrls;
+    private Set<String> imageUrls;
 
     private String description;
 }

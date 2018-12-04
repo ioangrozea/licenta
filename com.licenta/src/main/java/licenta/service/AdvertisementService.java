@@ -33,16 +33,16 @@ public class AdvertisementService {
     }
 
 
-    private Document getDocument(WebsiteDto websiteDto) {
+    private Document getDocument(String url) {
         try {
-            return Jsoup.connect(websiteDto.getWebsite().getUrl()).timeout(10000).ignoreHttpErrors(true).validateTLSCertificates(false).followRedirects(true).get();
+            return Jsoup.connect(url).timeout(10000).ignoreHttpErrors(true).validateTLSCertificates(false).followRedirects(true).get();
         } catch (IOException e) {
             throw new RuntimeException("website url not ok");
         }
     }
 
     private Set<Advertisement> getWebsiteAdvertisements(WebsiteDto websiteDto) {
-        Document document = getDocument(websiteDto);
+        Document document = getDocument(websiteDto.getWebsite().getUrl());
         Elements announcements = getTagTypeContent(document, websiteDto, TagType.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
         for (Element announcement : announcements) {
@@ -53,8 +53,18 @@ public class AdvertisementService {
             advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteDto));
             advertisements.add(advertisement);
             advertisement.setWebsite(websiteDto.getWebsite());
+            advertisement.setImageUrls(getImages(getDocument(advertisement.getAdvertisementUrl()), websiteDto));
         }
         return advertisements;
+    }
+
+    private Set<String> getImages(Document advertisement, WebsiteDto websiteDto) {
+        Set<String> images = new HashSet<>();
+        Elements photoElements = getTagTypeContent(advertisement, websiteDto, TagType.PHOTOS);
+        for (Element photo : photoElements) {
+            images.add(websiteDto.getWebsite().getBaseUrl() + photo.text());
+        }
+        return images;
     }
 
     private String getAnnouncementTitle(Document document, WebsiteDto websiteDto) {
@@ -96,7 +106,7 @@ public class AdvertisementService {
         Elements initialDocument = new Elements(document);
         do {
             //get block of classes or tags that have the tagName und update doc to find in
-            Elements currentElements = document.select("div." + tag.getTagName());
+            Elements currentElements = initialDocument.select("div." + tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             currentElements = document.select(tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;

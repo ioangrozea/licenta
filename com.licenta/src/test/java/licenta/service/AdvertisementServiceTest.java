@@ -51,9 +51,9 @@ public class AdvertisementServiceTest {
 
     @Test
     public void testGetDoc() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method privateMethod = AdvertisementService.class.getDeclaredMethod("getDocument", WebsiteDto.class);
+        Method privateMethod = AdvertisementService.class.getDeclaredMethod("getDocument", String.class);
         privateMethod.setAccessible(true);
-        assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get()));
+        assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).get().getWebsite().getUrl()));
     }
 
     @Test
