@@ -62,7 +62,7 @@ public class AdvertisementService {
         Set<String> images = new HashSet<>();
         Elements photoElements = getTagTypeContent(advertisement, websiteDto, TagType.PHOTOS);
         for (Element photo : photoElements) {
-            images.add(websiteDto.getWebsite().getBaseUrl() + photo.text());
+            images.add(websiteDto.getWebsite().getBaseUrl() + photo.attr("src"));
         }
         return images;
     }
@@ -106,9 +106,9 @@ public class AdvertisementService {
         Elements initialDocument = new Elements(document);
         do {
             //get block of classes or tags that have the tagName und update doc to find in
-            Elements currentElements = initialDocument.select("div." + tag.getTagName());
+            Elements currentElements = initialDocument.select("." + tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
-            currentElements = document.select(tag.getTagName());
+            currentElements = initialDocument.select(tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             tag = tag.getNextTag();
         } while (tag != null);
