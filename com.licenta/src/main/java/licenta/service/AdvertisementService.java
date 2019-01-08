@@ -1,8 +1,8 @@
 package licenta.service;
 
 import licenta.dto.Tag;
-import licenta.dto.TagType;
-import licenta.dto.WebsiteDto;
+import licenta.dto.WebsiteTag;
+import licenta.dto.WebsiteInformation;
 import licenta.entity.Advertisement;
 import licenta.repository.AdvertisementRepository;
 import org.jsoup.Jsoup;
@@ -28,8 +28,8 @@ public class AdvertisementService {
         this.advertisementRepository = advertisementRepository;
     }
 
-    public void generateAdvertisement(WebsiteDto websiteDto) {
-        advertisementRepository.saveAll(getWebsiteAdvertisements(websiteDto));
+    public void generateAdvertisement(WebsiteInformation websiteInformation) {
+        advertisementRepository.saveAll(getWebsiteAdvertisements(websiteInformation));
     }
 
 
@@ -41,49 +41,49 @@ public class AdvertisementService {
         }
     }
 
-    private Set<Advertisement> getWebsiteAdvertisements(WebsiteDto websiteDto) {
-        Document document = getDocument(websiteDto.getWebsite().getUrl());
-        Elements announcements = getTagTypeContent(document, websiteDto, TagType.ADVERTISEMENT);
+    private Set<Advertisement> getWebsiteAdvertisements(WebsiteInformation websiteInformation) {
+        Document document = getDocument(websiteInformation.getWebsite().getUrl());
+        Elements announcements = getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
         for (Element announcement : announcements) {
             Advertisement advertisement = new Advertisement();
-            advertisement.setTitle(getAnnouncementTitle(Jsoup.parse(announcement.html()), websiteDto));
-            advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteDto));
-            advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteDto));
-            advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteDto));
+            advertisement.setTitle(getAnnouncementTitle(Jsoup.parse(announcement.html()), websiteInformation));
+            advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteInformation));
+            advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteInformation));
+            advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
             advertisements.add(advertisement);
-            advertisement.setWebsite(websiteDto.getWebsite());
-            advertisement.setImageUrls(getImages(getDocument(advertisement.getAdvertisementUrl()), websiteDto));
+            advertisement.setWebsite(websiteInformation.getWebsite());
+            advertisement.setImageUrls(getImages(getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
         }
         return advertisements;
     }
 
-    private Set<String> getImages(Document advertisement, WebsiteDto websiteDto) {
+    private Set<String> getImages(Document advertisement, WebsiteInformation websiteInformation) {
         Set<String> images = new HashSet<>();
-        Elements photoElements = getTagTypeContent(advertisement, websiteDto, TagType.PHOTOS);
+        Elements photoElements = getTagTypeContent(advertisement, websiteInformation, WebsiteTag.PHOTOS);
         for (Element photo : photoElements) {
-            images.add(websiteDto.getWebsite().getBaseUrl() + photo.attr("src"));
+            images.add(websiteInformation.getWebsite().getBaseUrl() + photo.attr("src"));
         }
         return images;
     }
 
-    private String getAnnouncementTitle(Document document, WebsiteDto websiteDto) {
-        Elements title = getTagTypeContent(document, websiteDto, TagType.TITLE);
+    private String getAnnouncementTitle(Document document, WebsiteInformation websiteInformation) {
+        Elements title = getTagTypeContent(document, websiteInformation, WebsiteTag.TITLE);
         return title.text();
     }
 
-    private Float getAnnouncementPrice(Document document, WebsiteDto websiteDto) {
-        Elements price = getTagTypeContent(document, websiteDto, TagType.PRICE);
+    private Float getAnnouncementPrice(Document document, WebsiteInformation websiteInformation) {
+        Elements price = getTagTypeContent(document, websiteInformation, WebsiteTag.PRICE);
         return Float.parseFloat(price.text());
     }
 
-    private String getAnnouncementUrl(Document document, WebsiteDto websiteDto) {
-        Elements url = getTagTypeContent(document, websiteDto, TagType.URL);
-        return websiteDto.getWebsite().getBaseUrl() + url.attr("href");
+    private String getAnnouncementUrl(Document document, WebsiteInformation websiteInformation) {
+        Elements url = getTagTypeContent(document, websiteInformation, WebsiteTag.URL);
+        return websiteInformation.getWebsite().getBaseUrl() + url.attr("href");
     }
 
-    private Currency getPriceCurrency(Document document, WebsiteDto websiteDto) {
-        Elements price = getTagTypeContent(document, websiteDto, TagType.CURRENCY);
+    private Currency getPriceCurrency(Document document, WebsiteInformation websiteInformation) {
+        Elements price = getTagTypeContent(document, websiteInformation, WebsiteTag.CURRENCY);
         switch (price.text()) {
             case "euro":
                 return Currency.getInstance("EUR");
@@ -94,9 +94,9 @@ public class AdvertisementService {
         }
     }
 
-    private Elements getTagTypeContent(Document document, WebsiteDto websiteDto, TagType tagType) {
+    private Elements getTagTypeContent(Document document, WebsiteInformation websiteInformation, WebsiteTag websiteTag) {
         Elements tagElements = new Elements();
-        websiteDto.getTags().get(tagType)
+        websiteInformation.getTags().get(websiteTag)
                 .forEach(tag ->
                         getTagContent(document, tag).ifPresent(tagElements::addAll));
         return tagElements;

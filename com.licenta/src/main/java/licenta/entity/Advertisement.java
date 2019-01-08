@@ -33,8 +33,9 @@ public class Advertisement {
     @Column(nullable = false)
     private Currency currency;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private AdvertisementDescription description;
+
     @ElementCollection
     private Set<String> imageUrls;
-
-    private String description;
 }

@@ -16,7 +16,7 @@
 
 package licenta.container;
 
-import licenta.dto.factory.WebsiteDtoFactory;
+import licenta.dto.factory.WebsiteInformationFactory;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.WebsiteFactory;
@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Optional;
@@ -36,13 +35,13 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-public class WebsiteDtoFactoryAndTests {
+public class WebsiteInformationFactoryAndTests {
 
     @InjectMocks
     private WebsiteDtoRepository websiteDtoRepository;
 
     @InjectMocks
-    private WebsiteDtoFactory websiteDtoFactory;
+    private WebsiteInformationFactory websiteInformationFactory;
 
     @Mock
     private WebsiteRepository websiteRepository;
@@ -54,7 +53,7 @@ public class WebsiteDtoFactoryAndTests {
     public void initializeRepository() {
         Optional<Website> website = websiteFactory.getWebsite(WebsiteName.PIATA_A_Z);
         when(websiteRepository.findByName(WebsiteName.PIATA_A_Z)).thenReturn(website);
-        websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
+        websiteInformationFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteDtoRepository::add);
         website.ifPresent(websiteRepository::save);
     }
 

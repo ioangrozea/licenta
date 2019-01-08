@@ -1,8 +1,8 @@
 package licenta.dto.factory;
 
 import licenta.dto.Tag;
-import licenta.dto.TagType;
-import licenta.dto.WebsiteDto;
+import licenta.dto.WebsiteTag;
+import licenta.dto.WebsiteInformation;
 import licenta.entity.WebsiteName;
 import licenta.repository.WebsiteRepository;
 import lombok.Getter;
@@ -15,19 +15,17 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @Service
-public class WebsiteDtoFactory {
+public class WebsiteInformationFactory {
     private WebsiteRepository websiteRepository;
 
     @Autowired
-    public WebsiteDtoFactory(WebsiteRepository websiteRepository) {
+    public WebsiteInformationFactory(WebsiteRepository websiteRepository) {
         this.websiteRepository = websiteRepository;
     }
 
-    public Optional<WebsiteDto> getWebsiteDto(WebsiteName websiteName) {
+    public Optional<WebsiteInformation> getWebsiteDto(WebsiteName websiteName) {
         switch (websiteName) {
             case PIATA_A_Z:
                 return Optional.of(generatePIATA_A_Z());
@@ -36,16 +34,16 @@ public class WebsiteDtoFactory {
         }
     }
 
-    private WebsiteDto generatePIATA_A_Z() {
-        WebsiteDto websiteDto = new WebsiteDto();
-        websiteRepository.findByName(WebsiteName.PIATA_A_Z).ifPresent(websiteDto::setWebsite);
-        websiteDto.addTagSetToTagType(TagType.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagType.TITLE, generateTitleTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagType.URL, generateUrlTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagType.PRICE, generatePriceTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagType.CURRENCY, generatePriceCurrencyTagPIATA_A_Z());
-        websiteDto.addTagSetToTagType(TagType.PHOTOS, generatePhotoTagPIATA_A_Z());
-        return websiteDto;
+    private WebsiteInformation generatePIATA_A_Z() {
+        WebsiteInformation websiteInformation = new WebsiteInformation();
+        websiteRepository.findByName(WebsiteName.PIATA_A_Z).ifPresent(websiteInformation::setWebsite);
+        websiteInformation.addTagSetToTagType(WebsiteTag.ADVERTISEMENT, generateAnnouncementTagPIATA_A_Z());
+        websiteInformation.addTagSetToTagType(WebsiteTag.TITLE, generateTitleTagPIATA_A_Z());
+        websiteInformation.addTagSetToTagType(WebsiteTag.URL, generateUrlTagPIATA_A_Z());
+        websiteInformation.addTagSetToTagType(WebsiteTag.PRICE, generatePriceTagPIATA_A_Z());
+        websiteInformation.addTagSetToTagType(WebsiteTag.CURRENCY, generatePriceCurrencyTagPIATA_A_Z());
+        websiteInformation.addTagSetToTagType(WebsiteTag.PHOTOS, generatePhotoTagPIATA_A_Z());
+        return websiteInformation;
     }
 
     private Set<Tag> generatePhotoTagPIATA_A_Z() {

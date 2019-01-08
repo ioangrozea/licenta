@@ -1,6 +1,6 @@
 package licenta.dto.helpers;
 
-import licenta.dto.WebsiteDto;
+import licenta.dto.WebsiteInformation;
 import licenta.entity.Website;
 import licenta.repository.WebsiteDtoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +17,11 @@ public class WebsiteDtoWebsiteHelper {
         this.websiteDtoRepository = websiteDtoRepository;
     }
 
-    public Optional<Website> fromWebsiteDtoToWebsite(WebsiteDto websiteDto) {
-        return Optional.of(websiteDto.getWebsite());
+    public Optional<Website> fromWebsiteDtoToWebsite(WebsiteInformation websiteInformation) {
+        return Optional.of(websiteInformation.getWebsite());
     }
 
-    public Optional<WebsiteDto> fromWebsiteToWebsiteDto(Website website) {
+    public Optional<WebsiteInformation> fromWebsiteToWebsiteDto(Website website) {
         return websiteDtoRepository.findByName(website.getName());
     }
 }

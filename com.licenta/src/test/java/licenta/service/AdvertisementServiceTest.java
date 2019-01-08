@@ -1,7 +1,7 @@
 package licenta.service;
 
-import licenta.dto.WebsiteDto;
-import licenta.dto.factory.WebsiteDtoFactory;
+import licenta.dto.WebsiteInformation;
+import licenta.dto.factory.WebsiteInformationFactory;
 import licenta.entity.Advertisement;
 import licenta.entity.Website;
 import licenta.entity.WebsiteName;
@@ -30,7 +30,7 @@ public class AdvertisementServiceTest {
     private AdvertisementService advertisementService;
 
     @InjectMocks
-    private WebsiteDtoFactory websiteDtoFactory;
+    private WebsiteInformationFactory websiteInformationFactory;
 
     @InjectMocks
     private WebsiteDtoRepository websiteDtoRepository;
@@ -50,7 +50,7 @@ public class AdvertisementServiceTest {
 
     public void initializeSpecificRepository(Website website, WebsiteName websiteName) {
         when(websiteRepository.findByName(websiteName)).thenReturn(Optional.of(website));
-        websiteDtoFactory.getWebsiteDto(websiteName).ifPresent(websiteDtoRepository::add);
+        websiteInformationFactory.getWebsiteDto(websiteName).ifPresent(websiteDtoRepository::add);
         websiteRepository.save(website);
     }
 
@@ -59,7 +59,7 @@ public class AdvertisementServiceTest {
     public void testGetDoc() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method privateMethod = AdvertisementService.class.getDeclaredMethod("getDocument", String.class);
         privateMethod.setAccessible(true);
-        assertNotNull(privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(WebsiteName.PIATA_A_Z)
+        assertNotNull(privateMethod.invoke(advertisementService, websiteInformationFactory.getWebsiteDto(WebsiteName.PIATA_A_Z)
                 .get().getWebsite().getUrl()));
     }
 
@@ -70,9 +70,9 @@ public class AdvertisementServiceTest {
     }
 
     private void ass(WebsiteName websiteName) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Method privateMethod = AdvertisementService.class.getDeclaredMethod("getWebsiteAdvertisements", WebsiteDto.class);
+        Method privateMethod = AdvertisementService.class.getDeclaredMethod("getWebsiteAdvertisements", WebsiteInformation.class);
         privateMethod.setAccessible(true);
-        Set<Advertisement> advertisements = (Set<Advertisement>) privateMethod.invoke(advertisementService, websiteDtoFactory.getWebsiteDto(websiteName).get());
+        Set<Advertisement> advertisements = (Set<Advertisement>) privateMethod.invoke(advertisementService, websiteInformationFactory.getWebsiteDto(websiteName).get());
         assertFalse(advertisements.isEmpty());
         advertisements.forEach(advertisement -> {
             assertNotNull(advertisement.getAdvertisementUrl());
