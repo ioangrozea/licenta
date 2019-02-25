@@ -31,7 +31,7 @@ public class AdvertisementDescriptionInformationFactory {
 
     private Set<Tag> generateDescriptionTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
-        Tag tag = new Tag("section-annoucement-details", new Tag("three-col clearfix", new Tag("clearfix", new Tag("pull-right"))));
+        Tag tag = new Tag("section-annoucement-details", new Tag("three-col clearfix", new Tag("clearfix")));
         tags.add(tag);
         return tags;
     }

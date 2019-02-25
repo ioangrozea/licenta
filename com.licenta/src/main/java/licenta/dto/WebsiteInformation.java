@@ -13,7 +13,6 @@ import java.util.Set;
 public class WebsiteInformation {
     @Setter
     private Website website;
-    private AdvertisementDescriptionInformation advertisementDescriptionInformation;
     private Map<WebsiteTag, Set<Tag>> tags;
 
     public WebsiteInformation() {

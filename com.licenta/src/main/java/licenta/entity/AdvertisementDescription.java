@@ -22,7 +22,7 @@ public class AdvertisementDescription {
 
     private String description;
 
-    private Integer numberOfRooms;
+    private String numberOfRooms;
 
     private Integer area;
 

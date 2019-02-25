@@ -6,6 +6,8 @@ import licenta.dto.factory.AdvertisementDescriptionInformationFactory;
 import licenta.entity.AdvertisementDescription;
 import licenta.entity.WebsiteName;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,11 +26,17 @@ public class AdvertisementDescriptionService {
         Document document = scrapingService.getDocument(url);
         AdvertisementDescriptionInformation information = descriptionInformationFactory.getAdvertisementDescriptionInformation(websiteName);
         AdvertisementDescription description = new AdvertisementDescription();
-        description.setDescription(getAnnouncementDescriptionInformation(document, information));
+        setAnnouncementDescriptionInformation(document, information, description);
         return description;
     }
 
-    private String getAnnouncementDescriptionInformation(Document document, AdvertisementDescriptionInformation information) {
-        return scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.INFORMATION).toString();
+    private void setAnnouncementDescriptionInformation(Document document, AdvertisementDescriptionInformation information, AdvertisementDescription description) {
+        Elements tagTypeContent = scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.INFORMATION);
+        for (Element element : tagTypeContent) {
+            switch (element.select(".pull-left").text()) {
+                case "camere":
+                    description.setNumberOfRooms(element.select(".pull-right").text());
+            }
+        }
     }
 }
