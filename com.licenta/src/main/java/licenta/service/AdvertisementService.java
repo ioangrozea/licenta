@@ -1,8 +1,7 @@
 package licenta.service;
 
-import licenta.dto.Tag;
-import licenta.dto.WebsiteTag;
 import licenta.dto.WebsiteInformation;
+import licenta.dto.WebsiteTag;
 import licenta.entity.Advertisement;
 import licenta.repository.AdvertisementRepository;
 import org.jsoup.Jsoup;
@@ -12,20 +11,22 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Currency;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 
 @Service
 public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
+    private final AdvertisementDescriptionService advertisementDescriptionService;
+    private final ScrapingService scrapingService;
 
     @Autowired
-    public AdvertisementService(AdvertisementRepository advertisementRepository) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService) {
         this.advertisementRepository = advertisementRepository;
+        this.advertisementDescriptionService = advertisementDescriptionService;
+        this.scrapingService = scrapingService;
     }
 
     public void generateAdvertisement(WebsiteInformation websiteInformation) {
@@ -33,17 +34,9 @@ public class AdvertisementService {
     }
 
 
-    private Document getDocument(String url) {
-        try {
-            return Jsoup.connect(url).timeout(10000).ignoreHttpErrors(true).validateTLSCertificates(false).followRedirects(true).get();
-        } catch (IOException e) {
-            throw new RuntimeException("website url not ok");
-        }
-    }
-
     private Set<Advertisement> getWebsiteAdvertisements(WebsiteInformation websiteInformation) {
-        Document document = getDocument(websiteInformation.getWebsite().getUrl());
-        Elements announcements = getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
+        Document document = scrapingService.getDocument(websiteInformation.getWebsite().getUrl());
+        Elements announcements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
         for (Element announcement : announcements) {
             Advertisement advertisement = new Advertisement();
@@ -51,16 +44,17 @@ public class AdvertisementService {
             advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteInformation));
             advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteInformation));
             advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
-            advertisements.add(advertisement);
             advertisement.setWebsite(websiteInformation.getWebsite());
-            advertisement.setImageUrls(getImages(getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
+            advertisement.setImageUrls(getImages(scrapingService.getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
+            advertisement.setDescription(advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName()));
+            advertisements.add(advertisement);
         }
         return advertisements;
     }
 
-    private Set<String> getImages(Document advertisement, WebsiteInformation websiteInformation) {
+    private Set<String> getImages(Document document, WebsiteInformation websiteInformation) {
         Set<String> images = new HashSet<>();
-        Elements photoElements = getTagTypeContent(advertisement, websiteInformation, WebsiteTag.PHOTOS);
+        Elements photoElements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.PHOTOS);
         for (Element photo : photoElements) {
             images.add(websiteInformation.getWebsite().getBaseUrl() + photo.attr("src"));
         }
@@ -68,22 +62,22 @@ public class AdvertisementService {
     }
 
     private String getAnnouncementTitle(Document document, WebsiteInformation websiteInformation) {
-        Elements title = getTagTypeContent(document, websiteInformation, WebsiteTag.TITLE);
+        Elements title = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.TITLE);
         return title.text();
     }
 
     private Float getAnnouncementPrice(Document document, WebsiteInformation websiteInformation) {
-        Elements price = getTagTypeContent(document, websiteInformation, WebsiteTag.PRICE);
+        Elements price = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.PRICE);
         return Float.parseFloat(price.text());
     }
 
     private String getAnnouncementUrl(Document document, WebsiteInformation websiteInformation) {
-        Elements url = getTagTypeContent(document, websiteInformation, WebsiteTag.URL);
+        Elements url = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.URL);
         return websiteInformation.getWebsite().getBaseUrl() + url.attr("href");
     }
 
     private Currency getPriceCurrency(Document document, WebsiteInformation websiteInformation) {
-        Elements price = getTagTypeContent(document, websiteInformation, WebsiteTag.CURRENCY);
+        Elements price = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.CURRENCY);
         switch (price.text()) {
             case "euro":
                 return Currency.getInstance("EUR");
@@ -94,25 +88,5 @@ public class AdvertisementService {
         }
     }
 
-    private Elements getTagTypeContent(Document document, WebsiteInformation websiteInformation, WebsiteTag websiteTag) {
-        Elements tagElements = new Elements();
-        websiteInformation.getTags().get(websiteTag)
-                .forEach(tag ->
-                        getTagContent(document, tag).ifPresent(tagElements::addAll));
-        return tagElements;
-    }
-
-    private Optional<Elements> getTagContent(Document document, Tag tag) {
-        Elements initialDocument = new Elements(document);
-        do {
-            //get block of classes or tags that have the tagName und update doc to find in
-            Elements currentElements = initialDocument.select("." + tag.getTagName());
-            initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
-            currentElements = initialDocument.select(tag.getTagName());
-            initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
-            tag = tag.getNextTag();
-        } while (tag != null);
-        return initialDocument.html().equals(document.html()) ? Optional.empty() : Optional.of(new Elements(initialDocument));
-    }
 
 }

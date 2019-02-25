@@ -13,6 +13,7 @@ import java.util.Set;
 public class WebsiteInformation {
     @Setter
     private Website website;
+    private AdvertisementDescriptionInformation advertisementDescriptionInformation;
     private Map<WebsiteTag, Set<Tag>> tags;
 
     public WebsiteInformation() {
@@ -24,10 +25,6 @@ public class WebsiteInformation {
         tags.put(WebsiteTag.URL, new HashSet<>());
         tags.put(WebsiteTag.CURRENCY, new HashSet<>());
         tags.put(WebsiteTag.PHOTOS, new HashSet<>());
-    }
-
-    public void addTagToTagType(WebsiteTag websiteTag, Tag tag) {
-        tags.get(websiteTag).add(tag);
     }
 
     public void addTagSetToTagType(WebsiteTag websiteTag, Set<Tag> tag) {
