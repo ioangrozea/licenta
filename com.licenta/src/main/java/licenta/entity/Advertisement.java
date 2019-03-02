@@ -18,7 +18,7 @@ public class Advertisement {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.DETACH)
     private Website website;
 
     @Column(unique = true, nullable = false)
@@ -33,7 +33,8 @@ public class Advertisement {
     @Column(nullable = false)
     private Currency currency;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL,
+            mappedBy = "advertisement")
     private AdvertisementDescription description;
 
     @ElementCollection

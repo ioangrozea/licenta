@@ -14,7 +14,7 @@ public class AdvertisementDescriptionInformation {
     public AdvertisementDescriptionInformation() {
         tags = new HashMap<>();
         tags.put(AdvertisementDescriptionTag.INFORMATION, new HashSet<>());
-
+        tags.put(AdvertisementDescriptionTag.DESCRIPTION, new HashSet<>());
     }
 
     public void addTagSetToTagType(AdvertisementDescriptionTag websiteTag, Set<Tag> tag) {

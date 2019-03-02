@@ -25,13 +25,21 @@ public class AdvertisementDescriptionInformationFactory {
 
     private AdvertisementDescriptionInformation generateAdvertisementDescriptionInformationForPIATA_A_Z() {
         AdvertisementDescriptionInformation advertisementInformation = new AdvertisementDescriptionInformation();
-        advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.INFORMATION, generateDescriptionTagPIATA_A_Z());
+        advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.INFORMATION, generateInformationTagPIATA_A_Z());
+        advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.DESCRIPTION, generateDescriptionTagPIATA_A_Z());
         return advertisementInformation;
+    }
+
+    private Set<Tag> generateInformationTagPIATA_A_Z() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("section-annoucement-details", new Tag("three-col clearfix", new Tag("clearfix")));
+        tags.add(tag);
+        return tags;
     }
 
     private Set<Tag> generateDescriptionTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
-        Tag tag = new Tag("section-annoucement-details", new Tag("three-col clearfix", new Tag("clearfix")));
+        Tag tag = new Tag("col-md-8", new Tag("offer-details clearfix", new Tag("offer-details__description")));
         tags.add(tag);
         return tags;
     }

@@ -3,7 +3,9 @@ package licenta.service;
 import licenta.dto.WebsiteInformation;
 import licenta.dto.WebsiteTag;
 import licenta.entity.Advertisement;
+import licenta.entity.AdvertisementDescription;
 import licenta.repository.AdvertisementRepository;
+import licenta.repository.WebsiteRepository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -21,16 +23,19 @@ public class AdvertisementService {
     private final AdvertisementRepository advertisementRepository;
     private final AdvertisementDescriptionService advertisementDescriptionService;
     private final ScrapingService scrapingService;
+    private final WebsiteRepository websiteRepository;
 
     @Autowired
-    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService, WebsiteRepository websiteRepository) {
         this.advertisementRepository = advertisementRepository;
         this.advertisementDescriptionService = advertisementDescriptionService;
         this.scrapingService = scrapingService;
+        this.websiteRepository = websiteRepository;
     }
 
     public void generateAdvertisement(WebsiteInformation websiteInformation) {
-        advertisementRepository.saveAll(getWebsiteAdvertisements(websiteInformation));
+        Set<Advertisement> websiteAdvertisements = getWebsiteAdvertisements(websiteInformation);
+        websiteAdvertisements.forEach(advertisementRepository::save);
     }
 
 
@@ -44,9 +49,11 @@ public class AdvertisementService {
             advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteInformation));
             advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteInformation));
             advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
-            advertisement.setWebsite(websiteInformation.getWebsite());
+            websiteRepository.findByName(websiteInformation.getWebsite().getName()).ifPresent(advertisement::setWebsite);
             advertisement.setImageUrls(getImages(scrapingService.getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
-            advertisement.setDescription(advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName()));
+            AdvertisementDescription advertisementDescription = advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName());
+            advertisementDescription.setAdvertisement(advertisement);
+            advertisement.setDescription(advertisementDescription);
             advertisements.add(advertisement);
         }
         return advertisements;

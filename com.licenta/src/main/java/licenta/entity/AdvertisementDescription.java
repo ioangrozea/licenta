@@ -4,10 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -18,13 +15,24 @@ public class AdvertisementDescription {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne
+    @MapsId
+    private Advertisement advertisement;
+
     private String phoneNumber;
 
+    @Column(length = 3000)
     private String description;
 
     private String numberOfRooms;
 
+    private String distributor;
+
     private Integer area;
+
+    private String constructionYear;
+
+    private Integer floor;
 
     private String partitioning;
 
@@ -34,5 +42,5 @@ public class AdvertisementDescription {
 
     private Boolean hasParking;
 
-    private Boolean thermalPowerPlant;
+    private Boolean hasThermalPowerPlant;
 }
