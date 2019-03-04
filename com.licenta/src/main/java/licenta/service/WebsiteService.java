@@ -24,6 +24,6 @@ public class WebsiteService {
     public void setWebsiteAnnouncements() {
         websiteRepository.findAll()
                 .forEach(website -> websiteHelper.fromWebsiteToWebsiteDto(website)
-                        .ifPresent(advertisementService::generateAdvertisement));
+                        .ifPresent(advertisementService::generateAdvertisements));
     }
 }

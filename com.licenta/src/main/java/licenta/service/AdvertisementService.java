@@ -16,6 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -33,14 +37,31 @@ public class AdvertisementService {
         this.websiteRepository = websiteRepository;
     }
 
-    public void generateAdvertisement(WebsiteInformation websiteInformation) {
-        Set<Advertisement> websiteAdvertisements = getWebsiteAdvertisements(websiteInformation);
+    public void generateAdvertisements(WebsiteInformation websiteInformation) {
+        Set<Advertisement> websiteAdvertisements = getWebsiteAdvertisements(websiteInformation)
+                .stream()
+                .filter(distinctByKey(Advertisement::getAdvertisementUrl))
+                .collect(Collectors.toSet());
         websiteAdvertisements.forEach(advertisementRepository::save);
     }
 
-
     private Set<Advertisement> getWebsiteAdvertisements(WebsiteInformation websiteInformation) {
-        Document document = scrapingService.getDocument(websiteInformation.getWebsite().getUrl());
+        String baseUrl = websiteInformation.getWebsite().getUrl();
+        HashSet<Advertisement> advertisements = new HashSet<>();
+        for(int i = 1; i<10; i++){
+            Document document = scrapingService.getDocument(getNextWebsiteUrl(baseUrl, i));
+            advertisements.addAll(getAdvertisements(websiteInformation, document));
+        }
+        return advertisements;
+    }
+
+    private String getNextWebsiteUrl(String baseUrl, Integer pageNumber){
+        if(pageNumber == 1)
+            return baseUrl;
+        return baseUrl + "?page="+pageNumber;
+    }
+
+    private Set<Advertisement> getAdvertisements(WebsiteInformation websiteInformation, Document document) {
         Elements announcements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
         for (Element announcement : announcements) {
@@ -95,5 +116,8 @@ public class AdvertisementService {
         }
     }
 
-
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
 }
