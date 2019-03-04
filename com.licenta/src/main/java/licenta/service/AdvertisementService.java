@@ -16,10 +16,6 @@ import org.springframework.stereotype.Service;
 import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -28,20 +24,19 @@ public class AdvertisementService {
     private final AdvertisementDescriptionService advertisementDescriptionService;
     private final ScrapingService scrapingService;
     private final WebsiteRepository websiteRepository;
+    private final AdvertisementValidationService validationService;
 
     @Autowired
-    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService, WebsiteRepository websiteRepository) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService, WebsiteRepository websiteRepository, AdvertisementValidationService validationService) {
         this.advertisementRepository = advertisementRepository;
         this.advertisementDescriptionService = advertisementDescriptionService;
         this.scrapingService = scrapingService;
         this.websiteRepository = websiteRepository;
+        this.validationService = validationService;
     }
 
     public void generateAdvertisements(WebsiteInformation websiteInformation) {
-        Set<Advertisement> websiteAdvertisements = getWebsiteAdvertisements(websiteInformation)
-                .stream()
-                .filter(distinctByKey(Advertisement::getAdvertisementUrl))
-                .collect(Collectors.toSet());
+        Set<Advertisement> websiteAdvertisements = validationService.getAllUniqueAdvertisements(getWebsiteAdvertisements(websiteInformation));
         websiteAdvertisements.forEach(advertisementRepository::save);
     }
 
@@ -114,10 +109,5 @@ public class AdvertisementService {
             default:
                 return Currency.getInstance("EUR");
         }
-    }
-
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
     }
 }
