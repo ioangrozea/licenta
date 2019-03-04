@@ -56,7 +56,6 @@ public class AdvertisementService {
         return baseUrl + "?page="+pageNumber;
     }
 
-
     private Set<Advertisement> getAdvertisements(WebsiteInformation websiteInformation, Document document) {
         Elements announcements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
