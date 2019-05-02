@@ -37,9 +37,14 @@ public class WebsiteContainer {
             websiteInformationFactory.getWebsiteDto(WebsiteName.PIATA_A_Z).ifPresent(websiteInformation -> {
                 websiteFactory.getWebsite(WebsiteName.PIATA_A_Z).ifPresent(websiteInformation::setWebsite);
                 websiteDtoRepository.add(websiteInformation);
+            });
 
+            websiteInformationFactory.getWebsiteDto(WebsiteName.OLX).ifPresent(websiteInformation -> {
+                websiteFactory.getWebsite(WebsiteName.OLX).ifPresent(websiteInformation::setWebsite);
+                websiteDtoRepository.add(websiteInformation);
             });
             websiteFactory.getWebsite(WebsiteName.PIATA_A_Z).ifPresent(websiteRepository::save);
+            websiteFactory.getWebsite(WebsiteName.OLX).ifPresent(websiteRepository::save);
             websiteService.setWebsiteAnnouncements();
         };
     }

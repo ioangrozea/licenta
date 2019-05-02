@@ -25,14 +25,16 @@ public class AdvertisementService {
     private final ScrapingService scrapingService;
     private final WebsiteRepository websiteRepository;
     private final AdvertisementValidationService validationService;
+    private final AdvertisementDescriptionHelper helper;
 
     @Autowired
-    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService, WebsiteRepository websiteRepository, AdvertisementValidationService validationService) {
+    public AdvertisementService(AdvertisementRepository advertisementRepository, AdvertisementDescriptionService advertisementDescriptionService, ScrapingService scrapingService, WebsiteRepository websiteRepository, AdvertisementValidationService validationService, AdvertisementDescriptionHelper helper) {
         this.advertisementRepository = advertisementRepository;
         this.advertisementDescriptionService = advertisementDescriptionService;
         this.scrapingService = scrapingService;
         this.websiteRepository = websiteRepository;
         this.validationService = validationService;
+        this.helper = helper;
     }
 
     public void generateAdvertisements(WebsiteInformation websiteInformation) {
@@ -91,12 +93,16 @@ public class AdvertisementService {
 
     private Float getAnnouncementPrice(Document document, WebsiteInformation websiteInformation) {
         Elements price = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.PRICE);
-        return Float.parseFloat(price.text());
+        return Float.valueOf(helper.getIntegerFromString(price.text()));
     }
 
     private String getAnnouncementUrl(Document document, WebsiteInformation websiteInformation) {
         Elements url = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.URL);
-        return websiteInformation.getWebsite().getBaseUrl() + url.attr("href");
+        String href = url.attr("href");
+        if(href.contains(websiteInformation.getWebsite().getBaseUrl())){
+           return href;
+        }
+        return websiteInformation.getWebsite().getBaseUrl() + href;
     }
 
     private Currency getPriceCurrency(Document document, WebsiteInformation websiteInformation) {
