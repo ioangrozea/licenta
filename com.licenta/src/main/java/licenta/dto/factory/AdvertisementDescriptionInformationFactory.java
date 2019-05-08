@@ -34,14 +34,15 @@ public class AdvertisementDescriptionInformationFactory {
 
     private Set<Tag> generateDescriptionTagOlx() {
         Set<Tag> tags = new HashSet<>();
-        Tag tag = new Tag("offerdescription clr", new Tag("clr descriptioncontent marginbott20", new Tag("clr lheight20 large")));
+        Tag tag = new Tag("offerdescription clr", new Tag("clr lheight20 large"));
         tags.add(tag);
         return tags;
     }
 
     private Set<Tag> generateInformationTagOlx() {
         Set<Tag> tags = new HashSet<>();
-        Tag tag = new Tag("offerdescription clr", new Tag("clr descriptioncontent marginbott20", new Tag("clr lheight20 large")));
+        Tag tag = new Tag("clr descriptioncontent marginbott20", new Tag("details fixed marginbott20 margintop5 full",
+                new Tag("tr", new Tag("tr"))));
         tags.add(tag);
         return tags;
     }

@@ -28,12 +28,40 @@ public class AdvertisementDescriptionService {
         Document document = scrapingService.getDocument(url);
         AdvertisementDescriptionInformation information = descriptionInformationFactory.getAdvertisementDescriptionInformation(websiteName);
         AdvertisementDescription description = new AdvertisementDescription();
-        setAnnouncementDescriptionInformation(document, information, description);
+        switch (websiteName){
+            case OLX:
+                setAnnouncementDescriptionInformationOlx(document, information, description);
+            case PIATA_A_Z:
+                setAnnouncementDescriptionInformationPiata(document, information, description);
+        }
         setAnnouncementDescriptionDescription(document, information, description);
         return description;
     }
 
-    private void setAnnouncementDescriptionInformation(Document document, AdvertisementDescriptionInformation information, AdvertisementDescription description) {
+    private void setAnnouncementDescriptionInformationOlx(Document document, AdvertisementDescriptionInformation information, AdvertisementDescription description) {
+        Elements tagTypeContent = scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.INFORMATION);
+        for (Element element : tagTypeContent) {
+            switch (element.select("th").text()) {
+                case "Oferit de":
+                    description.setDistributor(element.select("a").text());
+                    break;
+                case "Suprafata utila":
+                    description.setArea(helper.getIntegerFromString(element.select("a").text()));
+                    break;
+                case "An constructie":
+                    description.setConstructionYear(element.select("a").text());
+                    break;
+                case "Compartimentare":
+                    description.setPartitioning(element.select("a").text());
+                    break;
+                case "Etaj":
+                    description.setFloor(helper.getIntegerFromString(element.select("a").text()));
+                    break;
+            }
+        }
+    }
+
+    private void setAnnouncementDescriptionInformationPiata(Document document, AdvertisementDescriptionInformation information, AdvertisementDescription description) {
         Elements tagTypeContent = scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.INFORMATION);
         for (Element element : tagTypeContent) {
             switch (element.select(".pull-left").text()) {

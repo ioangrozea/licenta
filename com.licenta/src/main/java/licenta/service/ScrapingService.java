@@ -42,6 +42,8 @@ public class ScrapingService {
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             currentElements = initialDocument.select(tag.getTagName());
             initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
+            currentElements = initialDocument.select("div[class="+ tag.getTagName() + "]");
+            initialDocument = currentElements.size() == 0 ? initialDocument : currentElements;
             tag = tag.getNextTag();
         } while (tag != null);
         return initialDocument.html().equals(document.html()) ? Optional.empty() : Optional.of(new Elements(initialDocument));
