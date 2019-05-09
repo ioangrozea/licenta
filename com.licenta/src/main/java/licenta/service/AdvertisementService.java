@@ -45,34 +45,37 @@ public class AdvertisementService {
     private Set<Advertisement> getWebsiteAdvertisements(WebsiteInformation websiteInformation) {
         String baseUrl = websiteInformation.getWebsite().getUrl();
         HashSet<Advertisement> advertisements = new HashSet<>();
-        for(int i = 1; i<10; i++){
+        for (int i = 1; i < 10; i++) {
             Document document = scrapingService.getDocument(getNextWebsiteUrl(baseUrl, i));
             advertisements.addAll(getAdvertisements(websiteInformation, document));
         }
         return advertisements;
     }
 
-    private String getNextWebsiteUrl(String baseUrl, Integer pageNumber){
-        if(pageNumber == 1)
+    private String getNextWebsiteUrl(String baseUrl, Integer pageNumber) {
+        if (pageNumber == 1)
             return baseUrl;
-        return baseUrl + "?page="+pageNumber;
+        return baseUrl + "?page=" + pageNumber;
     }
 
     private Set<Advertisement> getAdvertisements(WebsiteInformation websiteInformation, Document document) {
         Elements announcements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.ADVERTISEMENT);
         Set<Advertisement> advertisements = new HashSet<>();
         for (Element announcement : announcements) {
-            Advertisement advertisement = new Advertisement();
-            advertisement.setTitle(getAnnouncementTitle(Jsoup.parse(announcement.html()), websiteInformation));
-            advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteInformation));
-            advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteInformation));
-            advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
-            websiteRepository.findByName(websiteInformation.getWebsite().getName()).ifPresent(advertisement::setWebsite);
-            advertisement.setImageUrls(getImages(scrapingService.getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
-            AdvertisementDescription advertisementDescription = advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName());
-            advertisementDescription.setAdvertisement(advertisement);
-            advertisement.setDescription(advertisementDescription);
-            advertisements.add(advertisement);
+            try {
+                Advertisement advertisement = new Advertisement();
+                advertisement.setTitle(getAnnouncementTitle(Jsoup.parse(announcement.html()), websiteInformation));
+                advertisement.setPrice(getAnnouncementPrice(Jsoup.parse(announcement.html()), websiteInformation));
+                advertisement.setAdvertisementUrl(getAnnouncementUrl(Jsoup.parse(announcement.html()), websiteInformation));
+                advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
+                websiteRepository.findByName(websiteInformation.getWebsite().getName()).ifPresent(advertisement::setWebsite);
+                advertisement.setImageUrls(getImages(scrapingService.getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
+                AdvertisementDescription advertisementDescription = advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName());
+                advertisementDescription.setAdvertisement(advertisement);
+                advertisement.setDescription(advertisementDescription);
+                advertisements.add(advertisement);
+            } catch (RuntimeException ignored) {
+            }
         }
         return advertisements;
     }
@@ -99,8 +102,8 @@ public class AdvertisementService {
     private String getAnnouncementUrl(Document document, WebsiteInformation websiteInformation) {
         Elements url = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.URL);
         String href = url.attr("href");
-        if(href.contains(websiteInformation.getWebsite().getBaseUrl())){
-           return href;
+        if (href.contains(websiteInformation.getWebsite().getBaseUrl())) {
+            return href;
         }
         return websiteInformation.getWebsite().getBaseUrl() + href;
     }
