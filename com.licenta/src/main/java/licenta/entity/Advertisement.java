@@ -37,6 +37,6 @@ public class Advertisement {
             mappedBy = "advertisement")
     private AdvertisementDescription description;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> imageUrls;
 }

@@ -18,12 +18,10 @@ import java.util.stream.Collectors;
 @Service
 public class AdvertisementValidationService {
     private final AdvertisementRepository advertisementRepository;
-    private final WebsiteFactory websiteFactory;
 
     @Autowired
     public AdvertisementValidationService(AdvertisementRepository advertisementRepository, WebsiteFactory websiteFactory) {
         this.advertisementRepository = advertisementRepository;
-        this.websiteFactory = websiteFactory;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -56,12 +54,15 @@ public class AdvertisementValidationService {
 
     private Set<Advertisement> compareAllAdvertisements(List<Advertisement> allByWebsite, List<Advertisement> newAdvertisements) {
         Set<Advertisement> uniqueNewAdvertisements = new HashSet<>();
+        if(allByWebsite.isEmpty())
+            return newAdvertisements
+                    .stream()
+                    .filter(distinctByKey(Advertisement::getAdvertisementUrl))
+                    .collect(Collectors.toSet());
         for (Advertisement newAdvertisement : newAdvertisements) {
             for (Advertisement oldAdvertisement : allByWebsite) {
-                if (Math.abs(newAdvertisement.getPrice() - oldAdvertisement.getPrice()) < 40L) {
-                    if (advertisementRepository.findByAdvertisementUrl(newAdvertisement.getAdvertisementUrl()).isPresent()) {
-                        break;
-                    }
+                if (!newAdvertisement.getAdvertisementUrl().equals(oldAdvertisement.getAdvertisementUrl()) &&
+                        Math.abs(newAdvertisement.getPrice() - oldAdvertisement.getPrice()) < 40L) {
                     if (pythonRequestHandler(newAdvertisement, oldAdvertisement)) {
                         break;
                     }
@@ -73,13 +74,13 @@ public class AdvertisementValidationService {
     }
 
     public Boolean pythonRequestHandler(Advertisement first, Advertisement secound) {
-        final String uri = "http://localhost:8080/springrestexample/employees/{id}";
+        final String uri = "http://localhost:5000/compare";
 
         Map<String, String> params = new HashMap<>();
         params.put("img_list1", new Gson().toJson(first.getImageUrls().toString()));
         params.put("img_list2", new Gson().toJson(secound.getImageUrls().toString()));
-        params.put("description1", new Gson().toJson(first.getDescription().getDescription()));
-        params.put("description2", new Gson().toJson(secound.getDescription().getDescription()));
+        params.put("description1", first.getDescription().getDescription());
+        params.put("description2", secound.getDescription().getDescription());
 
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(uri, Boolean.class, params);

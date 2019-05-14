@@ -84,7 +84,12 @@ public class AdvertisementService {
         Set<String> images = new HashSet<>();
         Elements photoElements = scrapingService.getTagTypeContent(document, websiteInformation, WebsiteTag.PHOTOS);
         for (Element photo : photoElements) {
-            images.add(websiteInformation.getWebsite().getBaseUrl() + photo.attr("src"));
+            String src;
+            if (photo.attr("src").contains("https://"))
+                src = photo.attr("src");
+            else
+                src = websiteInformation.getWebsite().getBaseUrl() + photo.attr("src");
+            images.add(src);
         }
         return images;
     }
