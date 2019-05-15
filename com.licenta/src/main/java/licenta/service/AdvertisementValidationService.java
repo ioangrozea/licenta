@@ -83,6 +83,6 @@ public class AdvertisementValidationService {
         params.put("description2", secound.getDescription().getDescription());
 
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(uri, Boolean.class, params);
+        return restTemplate.postForEntity(uri, params, Boolean.class).getBody();
     }
 }
