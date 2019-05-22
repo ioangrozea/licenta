@@ -1,15 +1,18 @@
 package licenta.service;
 
-import com.google.gson.Gson;
 import licenta.entity.Advertisement;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.WebsiteFactory;
 import licenta.repository.AdvertisementRepository;
+import licenta.service.dto.RequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,7 +57,7 @@ public class AdvertisementValidationService {
 
     private Set<Advertisement> compareAllAdvertisements(List<Advertisement> allByWebsite, List<Advertisement> newAdvertisements) {
         Set<Advertisement> uniqueNewAdvertisements = new HashSet<>();
-        if(allByWebsite.isEmpty())
+        if (allByWebsite.isEmpty())
             return newAdvertisements
                     .stream()
                     .filter(distinctByKey(Advertisement::getAdvertisementUrl))
@@ -75,14 +78,9 @@ public class AdvertisementValidationService {
 
     public Boolean pythonRequestHandler(Advertisement first, Advertisement secound) {
         final String uri = "http://localhost:5000/compare";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("img_list1", new Gson().toJson(first.getImageUrls().toString()));
-        params.put("img_list2", new Gson().toJson(secound.getImageUrls().toString()));
-        params.put("description1", first.getDescription().getDescription());
-        params.put("description2", secound.getDescription().getDescription());
-
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForEntity(uri, params, Boolean.class).getBody();
+        return restTemplate.postForEntity(uri, new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
+                first.getDescription().getDescription(), secound.getDescription().getDescription()),
+                Boolean.class).getBody();
     }
 }
