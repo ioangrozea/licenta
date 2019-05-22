@@ -1,11 +1,15 @@
 package licenta.service;
 
+import com.google.gson.Gson;
 import licenta.entity.Advertisement;
 import licenta.entity.WebsiteName;
 import licenta.entity.factory.WebsiteFactory;
 import licenta.repository.AdvertisementRepository;
 import licenta.service.dto.RequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -79,8 +83,12 @@ public class AdvertisementValidationService {
     public Boolean pythonRequestHandler(Advertisement first, Advertisement secound) {
         final String uri = "http://localhost:5000/compare";
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.postForEntity(uri, new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
-                first.getDescription().getDescription(), secound.getDescription().getDescription()),
-                Boolean.class).getBody();
+        String requestJson = new Gson().toJson(new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
+                first.getDescription().getDescription(), secound.getDescription().getDescription()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+        String answer = restTemplate.postForObject(uri, entity, String.class);
+        return Boolean.valueOf(answer);
     }
 }
