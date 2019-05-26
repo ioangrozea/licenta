@@ -1,4 +1,4 @@
-package core.entity;
+package licenta.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

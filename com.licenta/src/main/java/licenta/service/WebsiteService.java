@@ -1,9 +1,13 @@
 package licenta.service;
 
 import licenta.dto.helpers.WebsiteDtoWebsiteHelper;
+import licenta.entity.Website;
+import licenta.entity.WebsiteName;
 import licenta.repository.WebsiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class WebsiteService {

@@ -39,4 +39,7 @@ public class Advertisement {
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> imageUrls;
+
+    @OneToMany(mappedBy = "advertisement", cascade = CascadeType.DETACH)
+    private Set<AdvertisementComment> comments;
 }

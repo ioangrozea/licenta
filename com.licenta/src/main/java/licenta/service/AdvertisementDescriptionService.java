@@ -28,7 +28,7 @@ public class AdvertisementDescriptionService {
         Document document = scrapingService.getDocument(url);
         AdvertisementDescriptionInformation information = descriptionInformationFactory.getAdvertisementDescriptionInformation(websiteName);
         AdvertisementDescription description = new AdvertisementDescription();
-        switch (websiteName){
+        switch (websiteName) {
             case OLX:
                 setAnnouncementDescriptionInformationOlx(document, information, description);
             case PIATA_A_Z:
@@ -43,19 +43,21 @@ public class AdvertisementDescriptionService {
         for (Element element : tagTypeContent) {
             switch (element.select("th").text()) {
                 case "Oferit de":
-                    description.setDistributor(element.select("a").text());
+                    description.setDistributor(element.select("strong").text());
                     break;
                 case "Suprafata utila":
-                    description.setArea(helper.getIntegerFromString(element.select("a").text()));
+                    description.setArea(helper.getIntegerFromString(element.select("strong").text()));
                     break;
                 case "An constructie":
-                    description.setConstructionYear(element.select("a").text());
+                    description.setConstructionYear(element.select("strong").text());
                     break;
                 case "Compartimentare":
-                    description.setPartitioning(element.select("a").text());
+                    description.setPartitioning(element.select("strong").text());
                     break;
                 case "Etaj":
-                    description.setFloor(helper.getIntegerFromString(element.select("a").text()));
+                    description.setFloor(helper.getIntegerFromString(element.select("strong").text()));
+                    break;
+                default:
                     break;
             }
         }

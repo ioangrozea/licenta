@@ -83,12 +83,26 @@ public class AdvertisementValidationService {
     public Boolean pythonRequestHandler(Advertisement first, Advertisement secound) {
         final String uri = "http://localhost:5000/compare";
         RestTemplate restTemplate = new RestTemplate();
-        String requestJson = new Gson().toJson(new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
-                first.getDescription().getDescription(), secound.getDescription().getDescription()));
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-        String answer = restTemplate.postForObject(uri, entity, String.class);
-        return Boolean.valueOf(answer);
+        RequestEntity re = new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
+                first.getDescription().getDescription(), secound.getDescription().getDescription());
+        try {
+            Boolean answer = restTemplate.postForEntity(uri, re,
+                    Boolean.class).getBody();
+            if (answer) {
+                System.out.println("TRUEEEEEEEEEEEEEEEEEEEEE");
+                System.out.println("desscription1: "+ re.getDescription1() + "\n" +
+                        "description2: " + re.getDescription2() + "\n" +
+                        "imglist1: " + re.getImg_list1() + "\n" +
+                        "imgList2: " + re.getImg_list2());
+            }
+            return answer;
+        } catch (Exception e) {
+            System.out.println("description1: "+ re.getDescription1() + "\n" +
+                                "description2: " + re.getDescription2() + "\n" +
+                                "imglist1: " + re.getImg_list1() + "\n" +
+                                "imgList2: " + re.getImg_list2());
+            return false;
+        }
+        //return Boolean.valueOf(answer);
     }
 }
