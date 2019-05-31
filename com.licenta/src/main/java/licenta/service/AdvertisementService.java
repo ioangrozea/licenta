@@ -43,12 +43,36 @@ public class AdvertisementService {
     }
 
     private Set<Advertisement> getWebsiteAdvertisements(WebsiteInformation websiteInformation) {
-        String baseUrl = websiteInformation.getWebsite().getUrl();
+        String url = websiteInformation.getWebsite().getUrl();
+        String baseUrl = websiteInformation.getWebsite().getBaseUrl();
         HashSet<Advertisement> advertisements = new HashSet<>();
-        for (int i = 1; i < 10; i++) {
-            Document document = scrapingService.getDocument(getNextWebsiteUrl(baseUrl, i));
-            advertisements.addAll(getAdvertisements(websiteInformation, document));
+        switch (websiteInformation.getWebsite().getName()) {
+            case OLX:
+                for (int i = 1; i < 3; i++) {
+                    Document document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "1-camera"));
+                    Set<Advertisement> scrapedAdd = getAdvertisements(websiteInformation, document);
+                    scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("1"));
+                    advertisements.addAll(scrapedAdd);
+                    document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "2-camere"));
+                    scrapedAdd = getAdvertisements(websiteInformation, document);
+                    scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("2"));
+                    advertisements.addAll(scrapedAdd);
+                    document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "3-camere"));
+                    scrapedAdd = getAdvertisements(websiteInformation, document);
+                    scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("3"));
+                    advertisements.addAll(scrapedAdd);
+                    document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "4-camere"));
+                    scrapedAdd = getAdvertisements(websiteInformation, document);
+                    scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("4 sau mai multe"));
+                    advertisements.addAll(scrapedAdd);
+                }
+            default:
+                for (int i = 1; i < 30; i++) {
+                    Document document = scrapingService.getDocument(getNextWebsiteUrl(url, i));
+                    advertisements.addAll(getAdvertisements(websiteInformation, document));
+                }
         }
+
         return advertisements;
     }
 
@@ -56,6 +80,12 @@ public class AdvertisementService {
         if (pageNumber == 1)
             return baseUrl;
         return baseUrl + "?page=" + pageNumber;
+    }
+
+    private String getCustomeOlxUrl(String baseUrl, Integer pageNumber, String numberOfRooms) {
+        if (pageNumber == 1)
+            return baseUrl + "imobiliare/apartamente-garsoniere-de-inchiriat/" + numberOfRooms + "/" + "cluj-napoca";
+        return baseUrl + "imobiliare/apartamente-garsoniere-de-inchiriat/" + numberOfRooms + "/" + "cluj-napoca/" + "?page=" + pageNumber;
     }
 
     private Set<Advertisement> getAdvertisements(WebsiteInformation websiteInformation, Document document) {
