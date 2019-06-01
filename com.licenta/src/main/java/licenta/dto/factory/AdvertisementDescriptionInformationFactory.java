@@ -29,6 +29,7 @@ public class AdvertisementDescriptionInformationFactory {
         AdvertisementDescriptionInformation advertisementInformation = new AdvertisementDescriptionInformation();
         advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.INFORMATION, generateInformationTagOlx());
         advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.DESCRIPTION, generateDescriptionTagOlx());
+        advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.DATE, generateDateTagOlx());
         return advertisementInformation;
     }
 
@@ -51,6 +52,7 @@ public class AdvertisementDescriptionInformationFactory {
         AdvertisementDescriptionInformation advertisementInformation = new AdvertisementDescriptionInformation();
         advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.INFORMATION, generateInformationTagPIATA_A_Z());
         advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.DESCRIPTION, generateDescriptionTagPIATA_A_Z());
+        advertisementInformation.addTagSetToTagType(AdvertisementDescriptionTag.DATE, generateDateTagPIATA_A_Z());
         return advertisementInformation;
     }
 
@@ -64,6 +66,20 @@ public class AdvertisementDescriptionInformationFactory {
     private Set<Tag> generateDescriptionTagPIATA_A_Z() {
         Set<Tag> tags = new HashSet<>();
         Tag tag = new Tag("col-md-8", new Tag("offer-details clearfix", new Tag("offer-details__description")));
+        tags.add(tag);
+        return tags;
+    }
+
+    private Set<Tag> generateDateTagPIATA_A_Z() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("col-sm-12", new Tag("announcement-detail clearfix", new Tag("announcement-detail__date-time pull-right", new Tag("span"))));
+        tags.add(tag);
+        return tags;
+    }
+
+    private Set<Tag> generateDateTagOlx() {
+        Set<Tag> tags = new HashSet<>();
+        Tag tag = new Tag("offer-titlebox", new Tag("offer-titlebox__details", new Tag("em")));
         tags.add(tag);
         return tags;
     }

@@ -3,6 +3,7 @@ package licenta.service;
 import licenta.dto.AdvertisementDescriptionInformation;
 import licenta.dto.AdvertisementDescriptionTag;
 import licenta.dto.factory.AdvertisementDescriptionInformationFactory;
+import licenta.entity.Advertisement;
 import licenta.entity.AdvertisementDescription;
 import licenta.entity.WebsiteName;
 import org.jsoup.nodes.Document;
@@ -10,6 +11,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 
 @Service
 public class AdvertisementDescriptionService {
@@ -24,7 +27,7 @@ public class AdvertisementDescriptionService {
         this.helper = helper;
     }
 
-    public AdvertisementDescription getAdvertisementDescription(String url, WebsiteName websiteName) {
+    public AdvertisementDescription getAdvertisementDescription(String url, WebsiteName websiteName, Advertisement advertisement) {
         Document document = scrapingService.getDocument(url);
         AdvertisementDescriptionInformation information = descriptionInformationFactory.getAdvertisementDescriptionInformation(websiteName);
         AdvertisementDescription description = new AdvertisementDescription();
@@ -34,6 +37,7 @@ public class AdvertisementDescriptionService {
             case PIATA_A_Z:
                 setAnnouncementDescriptionInformationPiata(document, information, description);
         }
+        advertisement.setDate(getAnnouncementDate(document, information, websiteName));
         setAnnouncementDescriptionDescription(document, information, description);
         return description;
     }
@@ -104,5 +108,10 @@ public class AdvertisementDescriptionService {
     private void setAnnouncementDescriptionDescription(Document document, AdvertisementDescriptionInformation information, AdvertisementDescription description) {
         Elements tagTypeContent = scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.DESCRIPTION);
         description.setDescription(tagTypeContent.text());
+    }
+
+    private LocalDate getAnnouncementDate(Document document, AdvertisementDescriptionInformation information, WebsiteName websiteName) {
+        Elements tagTypeContent = scrapingService.getTagTypeContent(document, information, AdvertisementDescriptionTag.DATE);
+        return helper.generateDateFromString(tagTypeContent.text(), websiteName);
     }
 }

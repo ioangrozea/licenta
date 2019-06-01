@@ -72,7 +72,6 @@ public class AdvertisementService {
                     advertisements.addAll(getAdvertisements(websiteInformation, document));
                 }
         }
-
         return advertisements;
     }
 
@@ -100,7 +99,7 @@ public class AdvertisementService {
                 advertisement.setCurrency(getPriceCurrency(Jsoup.parse(announcement.html()), websiteInformation));
                 websiteRepository.findByName(websiteInformation.getWebsite().getName()).ifPresent(advertisement::setWebsite);
                 advertisement.setImageUrls(getImages(scrapingService.getDocument(advertisement.getAdvertisementUrl()), websiteInformation));
-                AdvertisementDescription advertisementDescription = advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName());
+                AdvertisementDescription advertisementDescription = advertisementDescriptionService.getAdvertisementDescription(advertisement.getAdvertisementUrl(), advertisement.getWebsite().getName(), advertisement);
                 advertisementDescription.setAdvertisement(advertisement);
                 advertisement.setDescription(advertisementDescription);
                 advertisements.add(advertisement);
