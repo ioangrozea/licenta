@@ -47,13 +47,13 @@ public class AdvertisementDescriptionService {
         for (Element element : tagTypeContent) {
             switch (element.select("th").text()) {
                 case "Oferit de":
-                    description.setDistributor(element.select("strong").text());
+                    description.setDistributor("Proprietar");
                     break;
                 case "Suprafata utila":
                     description.setArea(helper.getIntegerFromString(element.select("strong").text()));
                     break;
                 case "An constructie":
-                    description.setConstructionYear(element.select("strong").text());
+                    description.setConstructionYear(unifyAnConstructie(element.select("strong").text()));
                     break;
                 case "Compartimentare":
                     description.setPartitioning(element.select("strong").text());
@@ -72,7 +72,7 @@ public class AdvertisementDescriptionService {
         for (Element element : tagTypeContent) {
             switch (element.select(".pull-left").text()) {
                 case "Pers. fizica sau agentie":
-                    description.setDistributor(element.select(".pull-right").text());
+                    description.setDistributor("Proprietar");
                     break;
                 case "camere":
                     description.setNumberOfRooms(element.select(".pull-right").text());
@@ -81,7 +81,7 @@ public class AdvertisementDescriptionService {
                     description.setArea(helper.getIntegerFromString(element.select(".pull-right").text()));
                     break;
                 case "an constructie":
-                    description.setConstructionYear(element.select(".pull-right").text());
+                    description.setConstructionYear(unifyAnConstructie(element.select(".pull-right").text()));
                     break;
                 case "compartimentare":
                     description.setPartitioning(element.select(".pull-right").text());
@@ -102,6 +102,19 @@ public class AdvertisementDescriptionService {
                     description.setHasThermalPowerPlant(helper.getBooleanFromString(element.select(".pull-right").text()));
                     break;
             }
+        }
+    }
+
+    private String unifyAnConstructie(String constructionYear) {
+        switch (constructionYear) {
+            case "Bloc nou":
+                return "Dupa 2000";
+            case "Dupa anul 2000":
+                return "Dupa 2000";
+            case "Dupa 2000":
+                return "Dupa 2000";
+            default:
+                return "Mai vachi de 2000";
         }
     }
 
