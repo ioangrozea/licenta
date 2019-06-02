@@ -47,7 +47,7 @@ public class AdvertisementDescriptionService {
         for (Element element : tagTypeContent) {
             switch (element.select("th").text()) {
                 case "Oferit de":
-                    description.setDistributor("Proprietar");
+                    description.setDistributor(unifyDistributor(element.select("strong").text()));
                     break;
                 case "Suprafata utila":
                     description.setArea(helper.getIntegerFromString(element.select("strong").text()));
@@ -72,7 +72,7 @@ public class AdvertisementDescriptionService {
         for (Element element : tagTypeContent) {
             switch (element.select(".pull-left").text()) {
                 case "Pers. fizica sau agentie":
-                    description.setDistributor("Proprietar");
+                    description.setDistributor(unifyDistributor(element.select(".pull-right").text()));
                     break;
                 case "camere":
                     description.setNumberOfRooms(element.select(".pull-right").text());
@@ -108,13 +108,34 @@ public class AdvertisementDescriptionService {
     private String unifyAnConstructie(String constructionYear) {
         switch (constructionYear) {
             case "Bloc nou":
-                return "Dupa 2000";
+                return "After";
             case "Dupa anul 2000":
-                return "Dupa 2000";
+                return "After";
             case "Dupa 2000":
-                return "Dupa 2000";
+                return "After";
+            case "Mai vechi de 2000":
+                return "Before";
+            case "inainte de 1977":
+                return "Before";
+            case "1977 – 1990":
+                return "Before";
+            case "1990 - 2000":
+                return "Before";
             default:
-                return "Mai vachi de 2000";
+                return "Empty";
+        }
+    }
+
+    private String unifyDistributor(String Distributor) {
+        switch (Distributor) {
+            case "Agentie":
+                return "Agentie";
+            case "Proprietar":
+                return "Proprietar";
+            case "Persoana fizica":
+                return "Proprietar";
+            default:
+                return "Empty";
         }
     }
 

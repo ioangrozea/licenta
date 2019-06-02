@@ -48,29 +48,36 @@ public class AdvertisementService {
         HashSet<Advertisement> advertisements = new HashSet<>();
         switch (websiteInformation.getWebsite().getName()) {
             case OLX:
-                for (int i = 1; i < 3; i++) {
+                for (int i = 1; i < 2; i++) {
                     Document document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "1-camera"));
                     Set<Advertisement> scrapedAdd = getAdvertisements(websiteInformation, document);
                     scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("1"));
                     advertisements.addAll(scrapedAdd);
+                    System.out.println("page " + i +" nr rooms 1 finished Olx");
                     document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "2-camere"));
                     scrapedAdd = getAdvertisements(websiteInformation, document);
                     scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("2"));
                     advertisements.addAll(scrapedAdd);
+                    System.out.println("page " + i +" nr rooms 2 finished Olx");
                     document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "3-camere"));
                     scrapedAdd = getAdvertisements(websiteInformation, document);
                     scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("3"));
                     advertisements.addAll(scrapedAdd);
+                    System.out.println("page " + i +" nr rooms 3 finished Olx");
                     document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "4-camere"));
                     scrapedAdd = getAdvertisements(websiteInformation, document);
                     scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("4 sau mai multe"));
                     advertisements.addAll(scrapedAdd);
+                    System.out.println("page " + i +" nr rooms 4 finished Olx");
                 }
+                break;
             default:
-                for (int i = 1; i < 30; i++) {
+                for (int i = 1; i < 10; i++) {
                     Document document = scrapingService.getDocument(getNextWebsiteUrl(url, i));
                     advertisements.addAll(getAdvertisements(websiteInformation, document));
+                    System.out.println("page " + i +" finished Piata");
                 }
+                break;
         }
         return advertisements;
     }

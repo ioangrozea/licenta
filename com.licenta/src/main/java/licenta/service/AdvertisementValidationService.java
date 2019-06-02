@@ -47,11 +47,13 @@ public class AdvertisementValidationService {
             Advertisement advertisement = newAdvertisements.get(0);
             switch (advertisement.getWebsite().getName()) {
                 case PIATA_A_Z: {
+                    System.out.println("started comparing piata");
                     List<Advertisement> allByWebsite = advertisementRepository
                             .findAllByWebsiteName(WebsiteName.OLX);
                     return compareAllAdvertisements(allByWebsite, newAdvertisements);
                 }
                 case OLX: {
+                    System.out.println("strting comparing olx");
                     List<Advertisement> allByWebsite = advertisementRepository
                             .findAllByWebsiteName(WebsiteName.PIATA_A_Z);
                     return compareAllAdvertisements(allByWebsite, newAdvertisements);
