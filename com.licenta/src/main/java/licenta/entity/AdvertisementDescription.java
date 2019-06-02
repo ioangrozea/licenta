@@ -26,11 +26,11 @@ public class AdvertisementDescription {
 
     private String numberOfRooms;
 
-    private String distributor = "empty";
+    private String distributor = "Empty";
 
     private Integer area;
 
-    private String constructionYear = "empty";
+    private String constructionYear = "Empty";
 
     private Integer floor;
 
