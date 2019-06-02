@@ -25,10 +25,12 @@ import java.util.stream.Collectors;
 @Service
 public class AdvertisementValidationService {
     private final AdvertisementRepository advertisementRepository;
+    private final AdvertisementCompleatingService advertisementCompleatingService;
 
     @Autowired
-    public AdvertisementValidationService(AdvertisementRepository advertisementRepository, WebsiteFactory websiteFactory) {
+    public AdvertisementValidationService(AdvertisementRepository advertisementRepository, WebsiteFactory websiteFactory, AdvertisementCompleatingService advertisementCompleatingService) {
         this.advertisementRepository = advertisementRepository;
+        this.advertisementCompleatingService = advertisementCompleatingService;
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -71,6 +73,7 @@ public class AdvertisementValidationService {
                 if (!newAdvertisement.getAdvertisementUrl().equals(oldAdvertisement.getAdvertisementUrl()) &&
                         Math.abs(newAdvertisement.getPrice() - oldAdvertisement.getPrice()) < 40L) {
                     if (pythonRequestHandler(newAdvertisement, oldAdvertisement)) {
+                        advertisementCompleatingService.getBetterAdvertisement(newAdvertisement, oldAdvertisement);
                         break;
                     }
                 }
@@ -86,16 +89,8 @@ public class AdvertisementValidationService {
         RequestEntity re = new RequestEntity(first.getImageUrls(), secound.getImageUrls(),
                 first.getDescription().getDescription(), secound.getDescription().getDescription());
         try {
-            Boolean answer = restTemplate.postForEntity(uri, re,
+            return restTemplate.postForEntity(uri, re,
                     Boolean.class).getBody();
-            if (answer) {
-                System.out.println("TRUEEEEEEEEEEEEEEEEEEEEE");
-                System.out.println("desscription1: "+ re.getDescription1() + "\n" +
-                        "description2: " + re.getDescription2() + "\n" +
-                        "imglist1: " + re.getImg_list1() + "\n" +
-                        "imgList2: " + re.getImg_list2());
-            }
-            return answer;
         } catch (Exception e) {
             System.out.println("description1: "+ re.getDescription1() + "\n" +
                                 "description2: " + re.getDescription2() + "\n" +
@@ -103,6 +98,5 @@ public class AdvertisementValidationService {
                                 "imgList2: " + re.getImg_list2());
             return false;
         }
-        //return Boolean.valueOf(answer);
     }
 }
