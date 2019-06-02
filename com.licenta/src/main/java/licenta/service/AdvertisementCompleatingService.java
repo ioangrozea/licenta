@@ -53,5 +53,7 @@ public class AdvertisementCompleatingService {
             savedAdvertisement.setAdvertisementUrl(newAdvertisement.getAdvertisementUrl());
             savedAdvertisement.setWebsite(newAdvertisement.getWebsite());
         }
+        if(newAdvertisement.getImageUrls().size() > savedAdvertisement.getImageUrls().size())
+            savedAdvertisement.setImageUrls(newAdvertisement.getImageUrls());
     }
 }
