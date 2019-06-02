@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -17,4 +18,14 @@ public class AdvertisementComment {
 
     @ManyToOne
     private Advertisement advertisement;
+
+    @Column
+    private String commentTitle;
+
+    @Column
+    private String comment;
+
+    @Column
+    private LocalDateTime date;
+
 }
