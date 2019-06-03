@@ -48,7 +48,7 @@ public class AdvertisementService {
         HashSet<Advertisement> advertisements = new HashSet<>();
         switch (websiteInformation.getWebsite().getName()) {
             case OLX:
-                for (int i = 1; i < 2; i++) {
+                for (int i = 1; i < 5; i++) {
                     Document document = scrapingService.getDocument(getCustomeOlxUrl(baseUrl, i, "1-camera"));
                     Set<Advertisement> scrapedAdd = getAdvertisements(websiteInformation, document);
                     scrapedAdd.forEach(advertisement -> advertisement.getDescription().setNumberOfRooms("1"));
@@ -72,7 +72,7 @@ public class AdvertisementService {
                 }
                 break;
             default:
-                for (int i = 1; i < 10; i++) {
+                for (int i = 1; i < 100; i++) {
                     Document document = scrapingService.getDocument(getNextWebsiteUrl(url, i));
                     advertisements.addAll(getAdvertisements(websiteInformation, document));
                     System.out.println("page " + i +" finished Piata");
