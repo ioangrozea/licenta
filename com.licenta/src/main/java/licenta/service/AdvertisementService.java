@@ -84,8 +84,8 @@ public class AdvertisementService {
 
     private String getNextWebsiteUrl(String baseUrl, Integer pageNumber) {
         if (pageNumber == 1)
-            return baseUrl;
-        return baseUrl + "?page=" + pageNumber;
+            return baseUrl + "&images=true";
+        return baseUrl + "?page=" + pageNumber + "&page=2";
     }
 
     private String getCustomeOlxUrl(String baseUrl, Integer pageNumber, String numberOfRooms) {
